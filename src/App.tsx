@@ -7,7 +7,7 @@ import CurrentConvo from "./pages/message/CurrentConvo";
 import { Navbar } from "./components/Navbar";
 import CreatePost from "./pages/create-post/CreatePost";
 import "./App.css";
-import CurrentPost from "./pages/create-comment/CurrentPost";
+import CurrentPost from "./pages/comment/CurrentPost";
 
 // import SideBar from "./components/SideBar";
 
@@ -32,7 +32,7 @@ function App() {
                   <Route path=":userId" element={<Profile />} />
                 </Route>
                 <Route path="/message" element={<Message />} />
-                <Route path="/CurrentConvo" element={<CurrentConvo />}>
+                <Route path="/conversation" element={<CurrentConvo />}>
                   <Route path=":convoId" element={<CurrentConvo />} />
                 </Route>
                 <Route path="/createpost" element={<CreatePost />} />

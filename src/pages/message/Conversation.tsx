@@ -26,7 +26,10 @@ export default function Conversation(props: ConversationType) {
             className="rounded-full w-14"
           />
           <div className="flex flex-col overflow-hidden text-ellipsis whitespace-nowrap">
-            <Link to={`/message/${convo.id}`}>
+            <Link
+              to={`/conversation/${convo.id}`}
+              state={{ currentConvo: convo }}
+            >
               <div className="flex justify-between">
                 <p className="font-bold text-lg text-gray-700">
                   {participantUsername}
