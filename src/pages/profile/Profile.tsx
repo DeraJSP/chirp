@@ -21,16 +21,10 @@ import message from "./img/message.svg";
 import PreviousPage from "../../components/PreviousPage";
 import CreateMessage from "../message/CreateMessage";
 import { useAuthState } from "react-firebase-hooks/auth";
-
-interface ProfileType {
-  id: string;
-  userPhoto: string;
-  username: string;
-  email: string;
-}
+import { ProfileType } from "../../components/ProfileType";
 
 export default function Profile() {
-  const [userData, setUserData] = useState<ProfileType | null>(null);
+  const [profileData, setProfileData] = useState<ProfileType | null>(null);
   const [toggleState, setToggleState] = useState(1);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -38,10 +32,10 @@ export default function Profile() {
   const profileUid = params.userId || "";
   const [user] = useAuthState(auth);
 
-  const getUserData = async () => {
+  const getProfileData = async () => {
     const userRef = doc(db, "users", profileUid);
     const userDoc = await getDoc(userRef);
-    setUserData({ ...userDoc.data() } as ProfileType);
+    setProfileData({ ...userDoc.data() } as ProfileType);
   };
 
   const [postList, setPostList] = useState<PostType[] | null>(null);
@@ -76,7 +70,7 @@ export default function Profile() {
   };
 
   useEffect(() => {
-    getUserData();
+    getProfileData();
     getPost();
   }, []);
 
@@ -90,12 +84,12 @@ export default function Profile() {
           </div>
           <div className="absolute top-16 left-1/2 transform -translate-x-1/2">
             <img
-              src={userData?.userPhoto}
+              src={profileData?.userPhoto}
               className="w-40 rounded-full mx-auto border-8 border-white"
               alt="profile photo"
             />
             <p className="text-2xl font-bold text-center text-white mt-4">
-              {userData?.username}
+              {profileData?.username}
             </p>
           </div>
         </div>
@@ -126,7 +120,7 @@ export default function Profile() {
                       <CreateMessage
                         setIsVisible={setIsVisible}
                         isVisible={isVisible}
-                        profileUid={profileUid}
+                        profileData={profileData as ProfileType}
                       />
                     ) : null}
                   </div>
@@ -146,28 +140,28 @@ export default function Profile() {
               <div className="flex items-center gap-x-3 gap-x-2">
                 <img src={calender} alt="calender icon" />
                 <p className="text-gray-600">
-                  Joined: <span className="ml-2">{userData?.email}</span>
+                  Joined: <span className="ml-2">{profileData?.email}</span>
                 </p>
               </div>
               <div className="flex items-center">
                 <div className="flex items-center gap-x-3">
                   <img src={friends} alt="Friends icon" />
                   <p className="text-gray-600">
-                    Friends:<span className="ml-2">{userData?.email}</span>
+                    Friends:<span className="ml-2">{profileData?.email}</span>
                   </p>{" "}
                 </div>
               </div>
               <div className="flex items-center gap-x-3">
                 <img src={birthday} alt="" />
                 <p className="text-gray-600">
-                  Birthday: <span className="ml-2">{userData?.email}</span>
+                  Birthday: <span className="ml-2">{profileData?.email}</span>
                 </p>
               </div>
               <div className="flex items-center gap-x-3">
                 {" "}
                 <img src={location} alt="" />
                 <p className="text-gray-600">
-                  Location: <span className="ml-2">{userData?.email}</span>
+                  Location: <span className="ml-2">{profileData?.email}</span>
                 </p>
               </div>
             </div>
