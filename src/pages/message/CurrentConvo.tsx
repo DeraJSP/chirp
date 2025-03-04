@@ -13,13 +13,17 @@ import {
 import { auth, db } from "../../config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import TimeAndDate from "../../components/TimeAndDate";
+import ReplyMessage from "./replyMessage";
+import { ConversationType } from "../../components/ConversationType";
 // import CreateMessage from "./CreateMessage";
 
 export default function CurrentConvo() {
   const [convoMessages, setConvoMessages] = useState<MessageType[] | null>(
     null
   );
-  const [currentConvo, setCurrentConvo] = useState<MessageType | null>(null);
+  const [currentConvo, setCurrentConvo] = useState<ConversationType | null>(
+    null
+  );
   // const [isVisible, setIsVisible] = useState(true);
 
   const [user] = useAuthState(auth);
@@ -109,6 +113,9 @@ export default function CurrentConvo() {
             );
           })}
         </div>
+      </div>
+      <div>
+        <ReplyMessage {...currentConvo} />
       </div>
 
       {/* <CreateMessage

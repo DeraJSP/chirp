@@ -57,7 +57,7 @@ export default function ReplyMessage(props: ConversationType) {
 
     const conversationRef = collection(
       db,
-      `conversations/${currentConvo.id}/messages`
+      `conversations/${currentConvo?.id}/messages`
     );
 
     await addDoc(conversationRef, {
@@ -65,14 +65,14 @@ export default function ReplyMessage(props: ConversationType) {
       senderUsername: user?.displayName,
       senderId: user?.uid,
       senderUserPhoto: user?.photoURL,
-      recipientId: currentConvo.recipientId,
-      recipientUsername: currentConvo.recipientUserPhoto,
-      recipientUserPhoto: currentConvo.recipientUserPhoto,
+      recipientId: currentConvo?.recipientId,
+      recipientUsername: currentConvo?.recipientUserPhoto,
+      recipientUserPhoto: currentConvo?.recipientUserPhoto,
       sent: timestamp,
       read: false,
     });
 
-    const convoDoc = doc(db, "conversations", currentConvo.id);
+    const convoDoc = doc(db, "conversations", currentConvo?.id);
 
     await updateDoc(convoDoc, {
       lastMessage: {
@@ -83,24 +83,22 @@ export default function ReplyMessage(props: ConversationType) {
   };
   return (
     <>
-      <div className="flex items-center justify-center w-full h-screen my-12 fixed top-0 left-0 bg-black bg-opacity-50">
-        <div className="relative p-8 bg-white shadow-xl w-2/5 h-96 rounded-2xl border-[1px] border-cGray-100">
-          <div className="m-6">
-            <form onSubmit={handleSubmit(onCreateMessage)}>
-              <textarea
-                placeholder="Send a message"
-                {...register("content")}
-                className="w-full h-40 text-lg p-3 border-[1px] border-cGray-100 rounded-2xl"
-              />
-              <p className="text-red-500">{errors.content?.message}</p>
-              <button
-                type="submit"
-                className="hover:bg-cBlue-100 border border-cBlue-200 px-8 py-1 rounded-xl font-bold text-lg text-gray-900"
-              >
-                Send
-              </button>
-            </form>
-          </div>
+      <div className="flex justify-center items-center m-5 w-1/2 h-full">
+        <div className="fixed bottom-5 w-1/2">
+          <form onSubmit={handleSubmit(onCreateMessage)}>
+            <textarea
+              placeholder="Send a message"
+              {...register("content")}
+              className="w-full h-20 text-lg p-3 border-[1px] border-cGray-100 rounded-2xl overflow-y-scroll"
+            />
+            <p className="text-red-500">{errors.content?.message}</p>
+            <button
+              type="submit"
+              className="hover:bg-cBlue-100 border border-cBlue-200 px-8 py-1 rounded-xl font-bold text-lg text-gray-900"
+            >
+              Send
+            </button>
+          </form>
         </div>
       </div>
     </>
