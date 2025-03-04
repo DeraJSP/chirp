@@ -41,7 +41,7 @@ export default function Message() {
 
   return (
     <>
-      <PreviousPage page="Message" />
+      <PreviousPage page="Conversations" />
 
       <section className="flex items-center justify-center">
         <div className="flex flex-col items-center justify-center gap-y-5 w-1/3 my-10">

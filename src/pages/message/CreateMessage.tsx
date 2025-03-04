@@ -25,14 +25,14 @@ export default function CreateMessage(props: {
   const timestamp = serverTimestamp();
 
   const schema = yup.object().shape({
-    messageContent: yup.string().required("You must add a message content"),
+    content: yup.string().required("You must add a message content"),
   });
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<{ messageContent: string }>({
+  } = useForm<{ content: string }>({
     resolver: yupResolver(schema),
   });
 
@@ -53,7 +53,7 @@ export default function CreateMessage(props: {
     });
   };
 
-  const onCreateMessage = async (data: { messageContent: string }) => {
+  const onCreateMessage = async (data: { content: string }) => {
     createConvoDoc();
 
     const conversationRef = collection(
@@ -77,7 +77,7 @@ export default function CreateMessage(props: {
 
     await updateDoc(convoDoc, {
       lastMessage: {
-        content: data.messageContent,
+        content: data.content,
         sent: timestamp,
       },
     });
@@ -98,10 +98,10 @@ export default function CreateMessage(props: {
               <form onSubmit={handleSubmit(onCreateMessage)}>
                 <textarea
                   placeholder="Send a message"
-                  {...register("messageContent")}
+                  {...register("content")}
                   className="w-full h-40 text-lg p-3 border-[1px] border-cGray-100 rounded-2xl"
                 />
-                <p className="text-red-500">{errors.messageContent?.message}</p>
+                <p className="text-red-500">{errors.content?.message}</p>
                 <button
                   type="submit"
                   className="hover:bg-cBlue-100 border border-cBlue-200 px-8 py-1 rounded-xl font-bold text-lg text-gray-900"

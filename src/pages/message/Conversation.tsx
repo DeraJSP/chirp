@@ -10,6 +10,7 @@ export default function Conversation(props: ConversationType) {
     role === "sender" ? convo.senderUserPhoto : convo.recipientUserPhoto;
   const participantUsername =
     role === "sender" ? convo.senderUsername : convo.recipientUsername;
+
   const sentDate = new Date(convo.lastMessage.sent.seconds * 1000);
 
   return (
@@ -30,7 +31,7 @@ export default function Conversation(props: ConversationType) {
               to={`/conversation/${convo.id}`}
               state={{ currentConvo: convo }}
             >
-              <div className="flex justify-between">
+              <div className="flex items-center justify-between">
                 <p className="font-bold text-lg text-gray-700">
                   {participantUsername}
                 </p>
