@@ -3,10 +3,11 @@ import Home from "./pages/main/Home";
 import Login from "./pages/login/Login";
 import Profile from "./pages/profile/Profile";
 import Message from "./pages/message/Message";
+import CurrentConvo from "./pages/message/CurrentConvo";
 import { Navbar } from "./components/Navbar";
 import CreatePost from "./pages/create-post/CreatePost";
 import "./App.css";
-import CurrentPost from "./pages/create-comment/CurrentPost";
+import CurrentPost from "./pages/comment/CurrentPost";
 
 // import SideBar from "./components/SideBar";
 
@@ -30,8 +31,9 @@ function App() {
                 <Route path="/profile" element={<Profile />}>
                   <Route path=":userId" element={<Profile />} />
                 </Route>
-                <Route path="/message" element={<Message />}>
-                  {/* <Route path=":userId" element={<Profile />} /> */}
+                <Route path="/message" element={<Message />} />
+                <Route path="/conversation" element={<CurrentConvo />}>
+                  <Route path=":convoId" element={<CurrentConvo />} />
                 </Route>
                 <Route path="/createpost" element={<CreatePost />} />
               </Routes>

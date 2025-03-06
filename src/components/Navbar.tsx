@@ -16,7 +16,7 @@ export const Navbar = () => {
 
   return (
     <>
-      <div className="flex items-center justify-between py-4 px-10 bg-cBlue-100 border-b border-cBlue-200 shadow-lg">
+      <div className="flex items-center justify-between py-3 px-10 bg-cBlue-100 border-b border-cBlue-200 shadow-lg">
         <Link to="/">
           <h1 className="text-2xl font-black">Chirp!</h1>
         </Link>

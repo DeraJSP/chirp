@@ -1,6 +1,6 @@
 import { Timestamp } from "firebase/firestore";
 
-export interface MessageType {
+export interface ConversationType {
   id: string;
   senderUsername: string;
   senderId: string;
@@ -8,7 +8,7 @@ export interface MessageType {
   recipientId: string;
   recipientUsername: string;
   recipientUserPhoto: string;
-  content: string;
-  sent: Timestamp;
-  read: false;
+  createdAt: Timestamp;
+  role: string;
+  lastMessage: { sent: Timestamp; content: string };
 }
