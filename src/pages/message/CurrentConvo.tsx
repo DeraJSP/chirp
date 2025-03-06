@@ -41,6 +41,7 @@ export default function CurrentConvo() {
   const getMessages = async () => {
     try {
       setCurrentConvo(location.state.currentConvo);
+
       const messagesRef = collection(
         db,
         `conversations/${currentConvo?.id}/messages`
@@ -66,22 +67,23 @@ export default function CurrentConvo() {
 
   useEffect(() => {
     getMessages();
-  }, [user?.uid]);
+  }, [currentConvo]);
   return (
     <>
       <div className="flex fixed top-[57px] w-full bg-white border-[1px] border-cGray-100 p-2">
         {" "}
         <PreviousPage page={""} />
-        <div className="flex items-center gap-x-3 font-bold text-xl text-gray-600">
+        <div className="flex items-center gap-x-3 font-bold text-lg text-gray-600">
           <img
             src={participantPhoto}
             alt="sender photo"
-            className="rounded-full w-12"
+            className="rounded-full w-11"
+            referrerPolicy="no-referrer"
           />
           <p>{participantUsername}</p>
         </div>
       </div>
-      <div className="flex justify-center mt-20 mb-7">
+      <div className="flex justify-center mt-20 mb-36">
         <div className="flex flex-col gap-5 w-2/5">
           {convoMessages?.map((message) => {
             return user?.uid === message.senderId ? (
@@ -114,8 +116,10 @@ export default function CurrentConvo() {
           })}
         </div>
       </div>
-      <div>
-        <ReplyMessage {...currentConvo} />
+      <div className="flex justify-center items-center m-5 w-full h-full">
+        <div className="fixed bottom-0 w-1/2 pb-5 bg-[#f3f4f6]">
+          {currentConvo ? <ReplyMessage {...currentConvo} /> : null}
+        </div>
       </div>
 
       {/* <CreateMessage

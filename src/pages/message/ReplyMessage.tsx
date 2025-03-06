@@ -83,23 +83,21 @@ export default function ReplyMessage(props: ConversationType) {
   };
   return (
     <>
-      <div className="flex justify-center items-center m-5 w-1/2 h-full">
-        <div className="fixed bottom-5 w-1/2">
-          <form onSubmit={handleSubmit(onCreateMessage)}>
-            <textarea
-              placeholder="Send a message"
-              {...register("content")}
-              className="w-full h-20 text-lg p-3 border-[1px] border-cGray-100 rounded-2xl overflow-y-scroll"
-            />
-            <p className="text-red-500">{errors.content?.message}</p>
-            <button
-              type="submit"
-              className="hover:bg-cBlue-100 border border-cBlue-200 px-8 py-1 rounded-xl font-bold text-lg text-gray-900"
-            >
-              Send
-            </button>
-          </form>
-        </div>
+      <div>
+        <form onSubmit={handleSubmit(onCreateMessage)}>
+          <textarea
+            placeholder="Send a message"
+            {...register("content")}
+            className="w-full h-20 text-lg p-3 border-[1px] border-cGray-100 rounded-2xl overflow-y-auto resize-none"
+          />
+          <p className="text-red-500">{errors.content?.message}</p>
+          <button
+            type="submit"
+            className="hover:bg-cBlue-100 border border-cBlue-200 px-8 py-1 rounded-xl font-bold text-lg text-gray-900"
+          >
+            Send
+          </button>
+        </form>
       </div>
     </>
   );
