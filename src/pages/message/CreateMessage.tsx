@@ -71,6 +71,7 @@ export default function CreateMessage(props: {
       recipientUserPhoto: profileData.userPhoto,
       sent: timestamp,
       read: false,
+      likes: [],
     });
 
     const convoDoc = doc(db, "conversations", `${participantsId}`);

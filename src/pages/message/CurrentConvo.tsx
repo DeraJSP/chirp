@@ -2,20 +2,12 @@ import { useLocation } from "react-router-dom";
 import PreviousPage from "../../components/PreviousPage";
 import { useEffect, useState } from "react";
 import { MessageType } from "../../components/MessageType";
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  orderBy,
-  query,
-} from "firebase/firestore";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { auth, db } from "../../config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import TimeAndDate from "../../components/TimeAndDate";
-import ReplyMessage from "./replyMessage";
+import ReplyMessage from "./ReplyMessage";
 import { ConversationType } from "../../components/ConversationType";
-// import CreateMessage from "./CreateMessage";
+import MessageList from "./MessageList";
 
 export default function CurrentConvo() {
   const [convoMessages, setConvoMessages] = useState<MessageType[] | null>(
@@ -24,7 +16,6 @@ export default function CurrentConvo() {
   const [currentConvo, setCurrentConvo] = useState<ConversationType | null>(
     null
   );
-  // const [isVisible, setIsVisible] = useState(true);
 
   const [user] = useAuthState(auth);
   const participantPhoto =
@@ -59,12 +50,6 @@ export default function CurrentConvo() {
     }
   };
 
-  const deleteMessage = async (messageId: string) => {
-    await deleteDoc(
-      doc(db, `conversations/${currentConvo?.id}/messages`, messageId)
-    );
-  };
-
   useEffect(() => {
     getMessages();
   }, [currentConvo]);
@@ -85,35 +70,9 @@ export default function CurrentConvo() {
       </div>
       <div className="flex justify-center mt-20 mb-36">
         <div className="flex flex-col gap-5 w-2/5">
-          {convoMessages?.map((message) => {
-            return user?.uid === message.senderId ? (
-              <div className="flex">
-                <div className="bg-cBlue-100 border border-cBlue-200 py-2 px-3 rounded-3xl text-gray-800">
-                  <div>
-                    <p>{message.content}</p>
-                    <p className="text-gray-500 text-sm italic mt-2">
-                      <TimeAndDate
-                        postDate={new Date(message.sent.seconds * 1000)}
-                      />
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="flex justify-end">
-                <div className="bg-white border-[1px] border-cGray-100 py-2 px-3 rounded-3xl text-gray-800">
-                  <div>
-                    <p>{message.content}</p>
-                    <p className="text-gray-500 text-sm italic mt-2">
-                      <TimeAndDate
-                        postDate={new Date(message.sent.seconds * 1000)}
-                      />
-                    </p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+          {convoMessages?.map((message) => (
+            <MessageList message={message} convoId={currentConvo?.id || ""} />
+          ))}
         </div>
       </div>
       <div className="flex justify-center items-center m-5 w-full h-full">
@@ -121,12 +80,6 @@ export default function CurrentConvo() {
           {currentConvo ? <ReplyMessage {...currentConvo} /> : null}
         </div>
       </div>
-
-      {/* <CreateMessage
-        setIsVisible={setIsVisible}
-        isVisible={isVisible}
-        profileData={profileData as ProfileType}
-      /> */}
     </>
   );
 }

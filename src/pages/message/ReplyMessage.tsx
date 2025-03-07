@@ -7,14 +7,10 @@ import {
   collection,
   doc,
   serverTimestamp,
-  // setDoc,
   updateDoc,
 } from "firebase/firestore";
 import * as yup from "yup";
-// import close from "../../components/img/close.svg";
-// import { ProfileType } from "../../components/ProfileType";
 import { ConversationType } from "../../components/ConversationType";
-// import CurrentConvo from "./CurrentConvo";
 
 export default function ReplyMessage(props: ConversationType) {
   const { ...currentConvo } = props;
@@ -35,26 +31,7 @@ export default function ReplyMessage(props: ConversationType) {
     resolver: yupResolver(schema),
   });
 
-  // const participantsId = [user?.uid, profileData.id];
-  // participantsId.sort().join("");
-
-  // const createConvoDoc = async () => {
-  //   const conversationRef = collection(db, `conversations`);
-  //   await setDoc(doc(conversationRef, currentConvo.id), {
-  //     senderUsername: user?.displayName,
-  //     senderId: user?.uid,
-  //     senderUserPhoto: user?.photoURL,
-  //     recipientId: profileData.id,
-  //     recipientUsername: profileData.username,
-  //     recipientUserPhoto: profileData.userPhoto,
-  //     lastMessage: "",
-  //     createdAt: timestamp,
-  //   });
-  // };
-
   const onCreateMessage = async (data: { content: string }) => {
-    // createConvoDoc();
-
     const conversationRef = collection(
       db,
       `conversations/${currentConvo?.id}/messages`
@@ -70,6 +47,7 @@ export default function ReplyMessage(props: ConversationType) {
       recipientUserPhoto: currentConvo?.recipientUserPhoto,
       sent: timestamp,
       read: false,
+      likes: [],
     });
 
     const convoDoc = doc(db, "conversations", currentConvo?.id);
@@ -88,7 +66,7 @@ export default function ReplyMessage(props: ConversationType) {
           <textarea
             placeholder="Send a message"
             {...register("content")}
-            className="w-full h-20 text-lg p-3 border-[1px] border-cGray-100 rounded-2xl overflow-y-auto resize-none"
+            className="w-full h-20 text-lg p-3 border-[1px] border-cGray-100 rounded-2xl overflow-y-auto resize-none focus:border-cBlue-200 focus:outline-none focus:ring-0 "
           />
           <p className="text-red-500">{errors.content?.message}</p>
           <button
