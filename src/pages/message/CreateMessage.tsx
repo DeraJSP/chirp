@@ -56,12 +56,12 @@ export default function CreateMessage(props: {
   const onCreateMessage = async (data: { content: string }) => {
     createConvoDoc();
 
-    const conversationRef = collection(
+    const messagesRef = collection(
       db,
       `conversations/${participantsId}/messages`
     );
 
-    await addDoc(conversationRef, {
+    await addDoc(messagesRef, {
       ...data,
       senderUsername: user?.displayName,
       senderId: user?.uid,

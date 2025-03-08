@@ -11,4 +11,5 @@ export interface MessageType {
   content: string;
   sent: Timestamp;
   read: false;
+  likes: string;
 }

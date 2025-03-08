@@ -63,9 +63,8 @@ export default function Post(props: PostType) {
     setCommentList(postDoc);
   };
 
-  const bookmarksRef = collection(db, `users/${user?.uid}/bookmarks`);
-
   const savePost = async () => {
+    const bookmarksRef = collection(db, `users/${user?.uid}/bookmarks`);
     await addDoc(bookmarksRef, post);
   };
 

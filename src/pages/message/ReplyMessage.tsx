@@ -32,12 +32,12 @@ export default function ReplyMessage(props: ConversationType) {
   });
 
   const onCreateMessage = async (data: { content: string }) => {
-    const conversationRef = collection(
+    const messagesRef = collection(
       db,
       `conversations/${currentConvo?.id}/messages`
     );
 
-    await addDoc(conversationRef, {
+    await addDoc(messagesRef, {
       ...data,
       senderUsername: user?.displayName,
       senderId: user?.uid,
