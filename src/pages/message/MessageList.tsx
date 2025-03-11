@@ -42,13 +42,6 @@ export default function MessageList(props: {
     });
   };
 
-  // const likeMessage = async (messageId: string) => {
-  //   const messageDoc = doc(db, `conversations/${convoId}/messages`, messageId);
-  //   await updateDoc(messageDoc, {
-  //     likes: arrayUnion(user?.uid),
-  //   });
-  // };
-
   const getMessageLikes = async (messageId: string) => {
     const messageRef = doc(db, `conversations/${convoId}/messages`, messageId);
     const messageDoc = await getDoc(messageRef);
@@ -78,7 +71,13 @@ export default function MessageList(props: {
             <div>
               <p>{message.content}</p>
               <p className="text-gray-500 text-sm italic mt-2">
-                <TimeAndDate postDate={new Date(message.sent.seconds * 1000)} />
+                <TimeAndDate
+                  postDate={
+                    message.sent
+                      ? new Date(message?.sent.seconds * 1000)
+                      : new Date()
+                  }
+                />
               </p>
             </div>
           </div>

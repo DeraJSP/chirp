@@ -2,7 +2,7 @@ import { useLocation } from "react-router-dom";
 import PreviousPage from "../../components/PreviousPage";
 import { useEffect, useState } from "react";
 import { MessageType } from "../../components/MessageType";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { auth, db } from "../../config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import ReplyMessage from "./ReplyMessage";
@@ -38,13 +38,18 @@ export default function CurrentConvo() {
         `conversations/${currentConvo?.id}/messages`
       );
       const querySnapshot = query(messagesRef, orderBy("sent"));
-      const data = await getDocs(querySnapshot);
 
-      const messagesDoc = data.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as MessageType[];
-      setConvoMessages(messagesDoc);
+      const unsubscribe = onSnapshot(querySnapshot, (snapshot) => {
+        const messagesDoc = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as MessageType[];
+        setConvoMessages(messagesDoc);
+      });
+      return () => {
+        unsubscribe();
+        console.log("clean up ran");
+      };
     } catch (error) {
       console.log(error);
     }
@@ -53,6 +58,7 @@ export default function CurrentConvo() {
   useEffect(() => {
     getMessages();
   }, [currentConvo]);
+
   return (
     <>
       <div className="flex fixed top-[57px] w-full bg-white border-[1px] border-cGray-100 p-2">
@@ -69,7 +75,7 @@ export default function CurrentConvo() {
         </div>
       </div>
       <div className="flex justify-center mt-20 mb-36">
-        <div className="flex flex-col gap-5 w-2/5">
+        <div className="flex flex-col gap-2 w-2/5">
           {convoMessages?.map((message) => (
             <MessageList message={message} convoId={currentConvo?.id || ""} />
           ))}
