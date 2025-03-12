@@ -8,6 +8,7 @@ import {
   deleteDoc,
   doc,
   getDoc,
+  getDocFromCache,
   updateDoc,
 } from "firebase/firestore";
 import TimeAndDate from "../../components/TimeAndDate";
@@ -25,32 +26,80 @@ export default function MessageList(props: {
   const [messageLikes, setMessageLikes] = useState<MessageType | null>(null);
 
   const deleteMessage = async (messageId: string) => {
-    await deleteDoc(doc(db, `conversations/${convoId}/messages`, messageId));
+    try {
+      await deleteDoc(doc(db, `conversations/${convoId}/messages`, messageId));
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const likeMessage = async (messageId: string) => {
-    const messageDoc = doc(db, `conversations/${convoId}/messages`, messageId);
-    await updateDoc(messageDoc, {
-      likes: arrayUnion(user?.uid),
-    });
+    try {
+      const messageDoc = doc(
+        db,
+        `conversations/${convoId}/messages`,
+        messageId
+      );
+      await updateDoc(messageDoc, {
+        likes: arrayUnion(user?.uid),
+      });
+      getCacheLikes(message.id);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const unlikeMessage = async (messageId: string) => {
-    const messageDoc = doc(db, `conversations/${convoId}/messages`, messageId);
-    await updateDoc(messageDoc, {
-      likes: arrayRemove(user?.uid),
-    });
+    try {
+      const messageDoc = doc(
+        db,
+        `conversations/${convoId}/messages`,
+        messageId
+      );
+      await updateDoc(messageDoc, {
+        likes: arrayRemove(user?.uid),
+      });
+      getCacheLikes(message.id);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getCacheLikes = async (messageId: string) => {
+    try {
+      const messageRef = doc(
+        db,
+        `conversations/${convoId}/messages`,
+        messageId
+      );
+      const messageSnap = await getDocFromCache(messageRef);
+      const messageDoc = {
+        id: messageSnap.id,
+        ...messageSnap.data(),
+      } as MessageType;
+      setMessageLikes(messageDoc);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const getMessageLikes = async (messageId: string) => {
-    const messageRef = doc(db, `conversations/${convoId}/messages`, messageId);
-    const messageDoc = await getDoc(messageRef);
+    try {
+      const messageRef = doc(
+        db,
+        `conversations/${convoId}/messages`,
+        messageId
+      );
+      const messageDoc = await getDoc(messageRef);
 
-    const messageData = {
-      id: messageDoc.id,
-      ...messageDoc.data(),
-    } as MessageType;
-    setMessageLikes(messageData);
+      const messageData = {
+        id: messageDoc.id,
+        ...messageDoc.data(),
+      } as MessageType;
+      setMessageLikes(messageData);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const likedMessage = messageLikes?.likes?.includes(user?.uid || "");
@@ -85,7 +134,11 @@ export default function MessageList(props: {
             {isVisible ? (
               <div className="flex gap-x-2">
                 {likedMessage ? (
-                  <button onClick={() => unlikeMessage(message.id)}>
+                  <button
+                    onClick={() => {
+                      unlikeMessage(message.id);
+                    }}
+                  >
                     <div className="flex items-center gap-x-[1px]">
                       <img src={like} className="w-6 m-1" alt="like" />
                       <p className="text-gray-600">
@@ -94,7 +147,11 @@ export default function MessageList(props: {
                     </div>
                   </button>
                 ) : (
-                  <button onClick={() => likeMessage(message.id)}>
+                  <button
+                    onClick={() => {
+                      likeMessage(message.id);
+                    }}
+                  >
                     <div className="flex items-center gap-x-[1px]">
                       <img src={unlike} className="w-6 m-1" alt="like" />
                       <p className="text-gray-600">
