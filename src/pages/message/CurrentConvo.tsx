@@ -31,7 +31,7 @@ export default function CurrentConvo() {
 
   const getMessages = async () => {
     try {
-      setCurrentConvo(location.state.currentConvo);
+      setCurrentConvo(location?.state?.currentConvo);
 
       const messagesRef = collection(
         db,
