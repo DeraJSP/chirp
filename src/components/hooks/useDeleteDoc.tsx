@@ -1,6 +1,5 @@
 import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../config/firebase";
-import { useEffect } from "react";
 
 export default function useDeleteDoc(col: string, docId: string) {
   const delDoc = async () => {
@@ -10,10 +9,5 @@ export default function useDeleteDoc(col: string, docId: string) {
       console.error(error);
     }
   };
-
-  useEffect(() => {
-    delDoc();
-  }, [col, docId]);
-
   return { delDoc };
 }

@@ -38,6 +38,7 @@ export default function Comment(props: CommentType) {
 
   const [isSaved, setIsSaved] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [trigger, setTrigger] = useState(false);
 
   const editPost = async (commentUpdate: string) => {
     const commentDoc = doc(db, `comments`, comment.id);
@@ -47,11 +48,11 @@ export default function Comment(props: CommentType) {
     });
   };
 
-  const addBookmark = async (commentId: string) => {
+  const addBookmark = async () => {
     try {
       const bookmarksRef = collection(db, `bookmarks`);
       await addDoc(bookmarksRef, {
-        commentId: commentId,
+        commentId: comment.id,
         createdAt: serverTimestamp(),
       });
     } catch (error) {
@@ -85,7 +86,7 @@ export default function Comment(props: CommentType) {
     }
   };
 
-  // const { delDoc } = useDeleteDoc("comments", comment.id);
+  const { delDoc } = useDeleteDoc("comments", comment.id);
 
   useEffect(() => {
     // const check = async () => {
@@ -95,11 +96,6 @@ export default function Comment(props: CommentType) {
 
     checkBookmark();
   }, [user, comment]);
-
-  // run the getLikes function
-  // useEffect(() => {
-  //   getComment();
-  // }, []);
 
   // useEffect(() => {
   //   const check = async () => {
@@ -159,13 +155,13 @@ export default function Comment(props: CommentType) {
               </button>
             ) : null}
           </div>
-          {/* <div>
+          <div>
             {user?.uid == comment?.userId ? (
               <button onClick={delDoc}>
                 <img src={delPost} alt="delete post icon" />
               </button>
             ) : null}
-          </div> */}
+          </div>
         </div>
         <div>
           {isVisible ? (
