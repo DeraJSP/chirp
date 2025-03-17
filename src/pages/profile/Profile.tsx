@@ -10,7 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Post from "../main/Post";
-import { PostType } from "../../components/PostType";
+import { PostType } from "../../components/types/PostType";
 import cover from "./img/cover.png";
 import addfriend from "./img/add_friend.svg";
 import friends from "./img/friends.svg";
@@ -21,7 +21,7 @@ import message from "./img/message.svg";
 import PreviousPage from "../../components/PreviousPage";
 import CreateMessage from "../message/CreateMessage";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { ProfileType } from "../../components/ProfileType";
+import { ProfileType } from "../../components/types/ProfileType";
 
 export default function Profile() {
   const [profileData, setProfileData] = useState<ProfileType | null>(null);

@@ -1,11 +1,10 @@
 import { Timestamp } from "firebase/firestore";
 
-export interface PostType {
+export interface CommentType {
   id: string;
   userId: string;
-  title: string;
   username: string;
-  description: string;
+  content: string;
   userPhoto: string;
   date: Timestamp;
   postId: string;

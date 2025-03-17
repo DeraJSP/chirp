@@ -1,14 +1,15 @@
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import Comments from "./Comments";
+import CommentsList from "./CommentsList";
 import CreateComment from "./CreateComment";
 import Post from "../main/Post";
-import { PostType } from "../../components/PostType";
+import { PostType } from "../../components/types/PostType";
 import PreviousPage from "../../components/PreviousPage";
 
 export default function CurrentPost() {
   const [currentPost, setCurrentPost] = useState<PostType | null>(null);
   const location = useLocation();
+
   const getPost = async () => {
     setCurrentPost(location.state.currentPost);
   };
@@ -28,7 +29,7 @@ export default function CurrentPost() {
 
       <section className="flex items-center justify-center">
         <div className="w-2/5 flex flex-col items-center justify-center">
-          <Comments postId={currentPost?.id || ""} />
+          <CommentsList currentPostId={currentPost?.id || ""} />
         </div>
       </section>
       <section>

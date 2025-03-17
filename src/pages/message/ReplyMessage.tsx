@@ -10,7 +10,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import * as yup from "yup";
-import { ConversationType } from "../../components/ConversationType";
+import { ConversationType } from "../../components/types/ConversationType";
 import { useEffect } from "react";
 
 export default function ReplyMessage(props: ConversationType) {

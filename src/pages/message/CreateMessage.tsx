@@ -12,7 +12,7 @@ import {
 } from "firebase/firestore";
 import * as yup from "yup";
 import close from "../../components/img/close.svg";
-import { ProfileType } from "../../components/ProfileType";
+import { ProfileType } from "../../components/types/ProfileType";
 
 export default function CreateMessage(props: {
   isVisible: boolean;

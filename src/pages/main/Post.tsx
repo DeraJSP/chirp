@@ -14,12 +14,13 @@ import { auth, db } from "../../config/firebase";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { PostType } from "../../components/PostType";
+import { CommentType } from "../../components/types/CommentType";
+import { PostType } from "../../components/types/PostType";
 import Like from "../../components/Like";
 import comment from "./img/comment.svg";
 import delPost from "./img/del_post.svg";
 import editPostIcon from "./img/edit_post.svg";
-import EditForm from "./EditForm";
+import EditForm from "../../components/EditForm";
 import save from "./img/save.svg";
 import unsave from "./img/unsave.svg";
 
@@ -36,7 +37,7 @@ export default function Post(props: PostType) {
 
   const postDate = new Date(post.date.seconds * 1000);
 
-  const [commentList, setCommentList] = useState<PostType[] | null>(null);
+  const [commentList, setCommentList] = useState<CommentType[] | null>(null);
   const [isSaved, setIsSaved] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -59,7 +60,7 @@ export default function Post(props: PostType) {
     const postDoc = data.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
-    })) as PostType[];
+    })) as CommentType[];
     setCommentList(postDoc);
   };
 
@@ -93,7 +94,7 @@ export default function Post(props: PostType) {
 
   const postComments = commentList?.filter(
     (comment) => comment.postId == post.id
-  ) as PostType[];
+  ) as CommentType[];
 
   const count = postComments?.length;
 
@@ -141,7 +142,7 @@ export default function Post(props: PostType) {
         <div className="flex flex-col items-start justify-center">
           <div className="mb-5">
             <Link to={`/post/${post.id}`} state={{ currentPost: post }}>
-              <p className="text-lg text-gray-800">{post?.description}</p>
+              <p className="text-lg text-gray-800">{post?.content}</p>
             </Link>
           </div>
 
@@ -185,7 +186,7 @@ export default function Post(props: PostType) {
               <EditForm
                 setIsVisible={setIsVisible}
                 isVisible={isVisible}
-                post={post.description}
+                post={post.content}
                 editPost={editPost}
               />
             ) : null}

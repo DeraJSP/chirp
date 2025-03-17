@@ -4,7 +4,7 @@ import { auth, db } from "../../config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import PreviousPage from "../../components/PreviousPage";
 import Conversation from "./Conversation";
-import { ConversationType } from "../../components/ConversationType";
+import { ConversationType } from "../../components/types/ConversationType";
 
 export default function Message() {
   const [conversation, setConversation] = useState<ConversationType[] | null>(

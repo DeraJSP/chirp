@@ -7,7 +7,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 
 interface CreateFormData {
-  description: string;
+  content: string;
 }
 
 export const CreateForm = () => {
@@ -20,7 +20,7 @@ export const CreateForm = () => {
   //validates the data and defines how it should look
 
   const schema = yup.object().shape({
-    description: yup.string().required("You must add a description"),
+    content: yup.string().required("You must add a description"),
   });
 
   // yupResolver acts as a bridge between yup validation lib and react hook form
@@ -33,7 +33,7 @@ export const CreateForm = () => {
     resolver: yupResolver(schema),
   });
 
-  const postsRef = collection(db, `users/${user?.uid}/posts`);
+  const postsRef = collection(db, `posts`);
 
   const onCreatePost = async (data: CreateFormData) => {
     await addDoc(postsRef, {
@@ -54,10 +54,10 @@ export const CreateForm = () => {
           <form onSubmit={handleSubmit(onCreatePost)}>
             <textarea
               placeholder="What's on your mind?"
-              {...register("description")}
+              {...register("content")}
               className="w-full h-64 text-lg p-3 border-[1px] border-cGray-100 rounded-2xl"
             />
-            <p className="text-red-500">{errors.description?.message}</p>
+            <p className="text-red-500">{errors.content?.message}</p>
             <button
               type="submit"
               className="hover:bg-cBlue-100 border border-cBlue-200 px-8 py-1 rounded-xl font-bold text-lg text-gray-900"

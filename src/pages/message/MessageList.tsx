@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { MessageType } from "../../components/MessageType";
+import { MessageType } from "../../components/types/MessageType";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../../config/firebase";
 import {
