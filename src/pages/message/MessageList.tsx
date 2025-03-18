@@ -25,52 +25,52 @@ export default function MessageList(props: {
   const [isVisible, setIsVisible] = useState(false);
   const [messageLikes, setMessageLikes] = useState<MessageType | null>(null);
 
-  const deleteMessage = async (messageId: string) => {
+  const deleteMessage = async () => {
     try {
-      await deleteDoc(doc(db, `conversations/${convoId}/messages`, messageId));
+      await deleteDoc(doc(db, `conversations/${convoId}/messages`, message.id));
     } catch (error) {
       console.error(error);
     }
   };
 
-  const likeMessage = async (messageId: string) => {
+  const likeMessage = async () => {
     try {
       const messageDoc = doc(
         db,
         `conversations/${convoId}/messages`,
-        messageId
+        message.id
       );
       await updateDoc(messageDoc, {
         likes: arrayUnion(user?.uid),
       });
-      getCacheLikes(message.id);
+      getCacheLikes();
     } catch (error) {
       console.error(error);
     }
   };
 
-  const unlikeMessage = async (messageId: string) => {
+  const unlikeMessage = async () => {
     try {
       const messageDoc = doc(
         db,
         `conversations/${convoId}/messages`,
-        messageId
+        message.id
       );
       await updateDoc(messageDoc, {
         likes: arrayRemove(user?.uid),
       });
-      getCacheLikes(message.id);
+      getCacheLikes();
     } catch (error) {
       console.error(error);
     }
   };
 
-  const getCacheLikes = async (messageId: string) => {
+  const getCacheLikes = async () => {
     try {
       const messageRef = doc(
         db,
         `conversations/${convoId}/messages`,
-        messageId
+        message.id
       );
       const messageSnap = await getDocFromCache(messageRef);
       const messageDoc = {
@@ -83,12 +83,12 @@ export default function MessageList(props: {
     }
   };
 
-  const getMessageLikes = async (messageId: string) => {
+  const getMessageLikes = async () => {
     try {
       const messageRef = doc(
         db,
         `conversations/${convoId}/messages`,
-        messageId
+        message.id
       );
       const messageDoc = await getDoc(messageRef);
 
@@ -102,10 +102,10 @@ export default function MessageList(props: {
     }
   };
 
-  const likedMessage = messageLikes?.likes?.includes(user?.uid || "");
+  const isLiked = messageLikes?.likes?.includes(user?.uid || "");
 
   useEffect(() => {
-    getMessageLikes(message.id);
+    getMessageLikes();
   }, []);
 
   return (
@@ -133,10 +133,10 @@ export default function MessageList(props: {
           <div className="flex items-end ml-2">
             {isVisible ? (
               <div className="flex gap-x-2">
-                {likedMessage ? (
+                {isLiked ? (
                   <button
                     onClick={() => {
-                      unlikeMessage(message.id);
+                      unlikeMessage();
                     }}
                   >
                     <div className="flex items-center gap-x-[1px]">
@@ -149,7 +149,7 @@ export default function MessageList(props: {
                 ) : (
                   <button
                     onClick={() => {
-                      likeMessage(message.id);
+                      likeMessage();
                     }}
                   >
                     <div className="flex items-center gap-x-[1px]">
@@ -160,7 +160,7 @@ export default function MessageList(props: {
                     </div>
                   </button>
                 )}
-                <button onClick={() => deleteMessage(message.id)}>
+                <button onClick={() => deleteMessage()}>
                   <img src={del} className="w-4 m-1" alt="delete message" />
                 </button>
               </div>
@@ -177,8 +177,8 @@ export default function MessageList(props: {
           <div className="flex items-end ml-2">
             {isVisible ? (
               <div className="flex mr-2">
-                {likedMessage ? (
-                  <button onClick={() => unlikeMessage(message.id)}>
+                {isLiked ? (
+                  <button onClick={() => unlikeMessage()}>
                     <div className="flex items-center gap-x-[1px]">
                       <img src={like} className="w-6 m-1" alt="like" />
                       <p className="text-gray-600">
@@ -187,7 +187,7 @@ export default function MessageList(props: {
                     </div>
                   </button>
                 ) : (
-                  <button onClick={() => likeMessage(message.id)}>
+                  <button onClick={() => likeMessage()}>
                     <div className="flex items-center gap-x-[1px]">
                       <img src={unlike} className="w-6 m-1" alt="like" />
                       <p className="text-gray-600">

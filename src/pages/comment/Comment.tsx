@@ -12,11 +12,8 @@ import {
 import TimeAndDate from "../../components/TimeAndDate";
 import { auth, db } from "../../config/firebase";
 import { useEffect, useState } from "react";
-// import { Link } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
-// import { PostType } from "../../components/types/PostType";
 import Like from "../../components/Like";
-// import comment from "./img/comment.svg";
 import delPost from "../main/img/del_post.svg";
 import editPostIcon from "../main/img/edit_post.svg";
 import EditForm from "../../components/EditForm";
@@ -33,16 +30,14 @@ interface Like {
 
 export default function Comment(props: CommentType) {
   const { ...comment } = props;
-
+  const { delDoc } = useDeleteDoc("comments", comment.id);
   const [user] = useAuthState(auth);
 
   const [isSaved, setIsSaved] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [trigger, setTrigger] = useState(false);
 
   const editPost = async (commentUpdate: string) => {
     const commentDoc = doc(db, `comments`, comment.id);
-
     await updateDoc(commentDoc, {
       description: commentUpdate,
     });
@@ -53,58 +48,64 @@ export default function Comment(props: CommentType) {
       const bookmarksRef = collection(db, `bookmarks`);
       await addDoc(bookmarksRef, {
         commentId: comment.id,
+        userId: user?.uid,
         createdAt: serverTimestamp(),
       });
+      setIsSaved(true);
     } catch (error) {
       console.error(error);
+      return false;
     }
   };
 
-  const checkBookmark = async () => {
+  const getAllBookmarks = async () => {
     try {
       const querySnapshot = query(
         collection(db, `bookmarks`),
-        where("commentId", "==", comment.id)
+        where("commentId", "==", comment.id),
+        where("userId", "==", user?.uid)
       );
       const data = await getDocs(querySnapshot);
       return data.empty ? setIsSaved(false) : setIsSaved(true);
     } catch (error) {
       console.error(error);
+      return false;
     }
   };
+
+  // const checkBookmark = async () => {
+  //   try {
+  //     const querySnapshot = query(
+  //       collection(db, `bookmarks`),
+  //       where("commentId", "==", comment.id),
+  //       where("userId", "==", user?.uid)
+  //     );
+  //     const data = await getDocsFromCache(querySnapshot);
+  //     return data.empty ? setIsSaved(false) : setIsSaved(true);
+  //   } catch (error) {
+  //     console.error(error);
+  //     return false;
+  //   }
+  // };
 
   const delBookmark = async () => {
     try {
       const querySnapshot = query(
         collection(db, `bookmarks`),
-        where("id", "==", comment.id)
+        where("commentId", "==", comment.id),
+        where("userId", "==", user?.uid)
       );
       const data = await getDocs(querySnapshot);
-      await deleteDoc(doc(db, `bookmarks`, data.docs[0].id));
+      await deleteDoc(doc(db, "bookmarks", data.docs[0].id));
+      setIsSaved(false);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const { delDoc } = useDeleteDoc("comments", comment.id);
-
   useEffect(() => {
-    // const check = async () => {
-    //   const result = await checkSave();
-    //   setIsSaved(result);
-    // };
-
-    checkBookmark();
-  }, [user, comment]);
-
-  // useEffect(() => {
-  //   const check = async () => {
-  //     const result = await checkBookmark();
-  //     setIsSaved(result);
-  //   };
-
-  //   check();
-  // }, [user, post]);
+    getAllBookmarks();
+  }, []);
 
   return (
     <>
@@ -140,11 +141,11 @@ export default function Comment(props: CommentType) {
             </Link>{" "}
           </div> */}
           <div>
-            <button onClick={isSaved ? () => delBookmark : () => addBookmark}>
-              {!isSaved ? (
-                <img src={save} alt="save post" />
-              ) : (
+            <button onClick={isSaved ? delBookmark : addBookmark}>
+              {isSaved ? (
                 <img src={unsave} alt="unsave post" />
+              ) : (
+                <img src={save} alt="save post" />
               )}
             </button>
           </div>

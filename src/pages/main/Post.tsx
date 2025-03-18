@@ -6,6 +6,7 @@ import {
   doc,
   getDocs,
   query,
+  serverTimestamp,
   updateDoc,
   where,
 } from "firebase/firestore";
@@ -65,15 +66,22 @@ export default function Post(props: PostType) {
   };
 
   const savePost = async () => {
-    const bookmarksRef = collection(db, `users/${user?.uid}/bookmarks`);
-    await addDoc(bookmarksRef, post);
+    try {
+      const bookmarksRef = collection(db, `bookmarks`);
+      await addDoc(bookmarksRef, {
+        postId: post.id,
+        createdAt: serverTimestamp(),
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const checkSave = async () => {
     try {
       const postStatus = query(
-        collection(db, `users/${user?.uid}/bookmarks`),
-        where("id", "==", post.id)
+        collection(db, `bookmarks`),
+        where("postId", "==", post.id)
       );
       const querySnapshot = await getDocs(postStatus);
       return querySnapshot.empty ? false : true;
@@ -85,11 +93,11 @@ export default function Post(props: PostType) {
 
   const deleteSave = async () => {
     const querySnapshot = query(
-      collection(db, `users/${user?.uid}/bookmarks`),
-      where("id", "==", post.id)
+      collection(db, `bookmarks`),
+      where("postId", "==", post.id)
     );
     const data = await getDocs(querySnapshot);
-    await deleteDoc(doc(db, `users/${user?.uid}/bookmarks`, data.docs[0].id));
+    await deleteDoc(doc(db, `bookmarks`, data.docs[0].id));
   };
 
   const postComments = commentList?.filter(
