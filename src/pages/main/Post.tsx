@@ -1,18 +1,7 @@
-import {
-  addDoc,
-  collection,
-  collectionGroup,
-  deleteDoc,
-  doc,
-  getDocs,
-  query,
-  serverTimestamp,
-  updateDoc,
-  where,
-} from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import TimeAndDate from "../../components/TimeAndDate";
 import { auth, db } from "../../config/firebase";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { CommentType } from "../../components/types/CommentType";
@@ -25,6 +14,8 @@ import EditForm from "../../components/EditForm";
 import save from "./img/save.svg";
 import unsave from "./img/unsave.svg";
 import useBookmark from "../../components/hooks/useBookmark";
+import useDeleteDoc from "../../components/hooks/useDeleteDoc";
+import useFetchDoc from "../../components/hooks/useFetchDoc";
 
 interface Like {
   likeId: string;
@@ -34,14 +25,19 @@ interface Like {
 
 export default function Post(props: PostType) {
   const { ...post } = props;
-  const { addBookmark, delBookmark, isSaved } = useBookmark("postId", post.id);
+  const [isVisible, setIsVisible] = useState(false);
 
+  const { addBookmark, delBookmark, isSaved } = useBookmark("postId", post.id);
+  const { delDoc: deletePost } = useDeleteDoc("posts", post.id);
+  const { data: commentList } = useFetchDoc<CommentType>(
+    "comments",
+    "postId",
+    post.id,
+    post.id
+  );
   const [user] = useAuthState(auth);
 
   const postDate = new Date(post.date.seconds * 1000);
-
-  const [commentList, setCommentList] = useState<CommentType[] | null>(null);
-  const [isVisible, setIsVisible] = useState(false);
 
   const editPost = async (postUpdate: string) => {
     const postDoc = doc(db, `users/${user?.uid}/posts`, post.id);
@@ -51,77 +47,8 @@ export default function Post(props: PostType) {
     });
   };
 
-  const deletePost = async () => {
-    await deleteDoc(doc(db, `users/${user?.uid}/posts`, post.id));
-  };
-
-  const getComment = async () => {
-    const postsRef = collectionGroup(db, "comments");
-    const data = await getDocs(postsRef);
-
-    const postDoc = data.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as CommentType[];
-    setCommentList(postDoc);
-  };
-
-  const savePost = async () => {
-    try {
-      const bookmarksRef = collection(db, `bookmarks`);
-      await addDoc(bookmarksRef, {
-        postId: post.id,
-        createdAt: serverTimestamp(),
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const checkSave = async () => {
-    try {
-      const postStatus = query(
-        collection(db, `bookmarks`),
-        where("postId", "==", post.id)
-      );
-      const querySnapshot = await getDocs(postStatus);
-      return querySnapshot.empty ? false : true;
-    } catch (error) {
-      console.log(error);
-      return false;
-    }
-  };
-
-  const deleteSave = async () => {
-    const querySnapshot = query(
-      collection(db, `bookmarks`),
-      where("postId", "==", post.id)
-    );
-    const data = await getDocs(querySnapshot);
-    await deleteDoc(doc(db, `bookmarks`, data.docs[0].id));
-  };
-
-  const postComments = commentList?.filter(
-    (comment) => comment.postId == post.id
-  ) as CommentType[];
-
-  const count = postComments?.length;
-
-  const countCheck = () => `${count > 1 ? count : count}`;
-
-  // run the getLikes function
-  useEffect(() => {
-    getComment();
-  }, []);
-
-  useEffect(() => {
-    const check = async () => {
-      const result = await checkSave();
-      setIsSaved(result);
-    };
-
-    check();
-  }, [user, post]);
+  const count = commentList?.length;
+  const countCheck = () => `${count || 0 > 1 ? count : count}`;
 
   return (
     <>
@@ -166,7 +93,7 @@ export default function Post(props: PostType) {
             </Link>{" "}
           </div>
           <div className="flex items-center">
-            <button onClick={isSaved ? deleteSave : savePost}>
+            <button onClick={isSaved ? delBookmark : addBookmark}>
               {!isSaved ? (
                 <img src={save} alt="save post" />
               ) : (
