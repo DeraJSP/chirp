@@ -106,8 +106,7 @@ export default function Post(props: PostType) {
 
   const count = postComments?.length;
 
-  const countCheck = () =>
-    `${count > 1 ? count + " Comments" : count + " Comment"}`;
+  const countCheck = () => `${count > 1 ? count : count}`;
 
   // run the getLikes function
   useEffect(() => {
@@ -153,52 +152,54 @@ export default function Post(props: PostType) {
               <p className="text-lg text-gray-800">{post?.content}</p>
             </Link>
           </div>
+        </div>
 
-          <div className="flex items-center justify-center gap-x-6">
-            <div>
-              <Like postId={post?.id} />
-            </div>
+        <div className="flex items-center justify-between mx-10">
+          <div>
+            <Like postId={post?.id} />
+          </div>
+          <div className="flex gap-x-2">
+            <img src={comment} alt="comment icon" className="w-5" />
+            <Link to={`/post/${post.id}`} state={{ currentPost: post }}>
+              <p className="text-gray-600">{countCheck()} </p>
+            </Link>{" "}
+          </div>
+          <div className="flex items-center">
+            <button onClick={isSaved ? deleteSave : savePost}>
+              {!isSaved ? (
+                <img src={save} alt="save post" />
+              ) : (
+                <img src={unsave} alt="unsave post" />
+              )}
+            </button>
+          </div>
 
-            <div className="flex gap-x-2">
-              <img src={comment} alt="comment icon" className="w-5" />
-              <Link to={`/post/${post.id}`} state={{ currentPost: post }}>
-                <p className="text-gray-600">{countCheck()} </p>
-              </Link>{" "}
-            </div>
+          {user?.uid == post?.userId ? (
             <div>
-              <button onClick={isSaved ? deleteSave : savePost}>
-                {!isSaved ? (
-                  <img src={save} alt="save post" />
-                ) : (
-                  <img src={unsave} alt="unsave post" />
-                )}
+              <button onClick={() => setIsVisible(!isVisible)}>
+                <img src={editPostIcon} alt="edit post icon" />
               </button>
             </div>
+          ) : null}
+
+          {user?.uid == post?.userId ? (
             <div>
-              {user?.uid == post?.userId ? (
-                <button onClick={() => setIsVisible(!isVisible)}>
-                  <img src={editPostIcon} alt="edit post icon" />
-                </button>
-              ) : null}
+              <button onClick={deletePost}>
+                <img src={delPost} alt="delete post icon" />
+              </button>
             </div>
-            <div>
-              {user?.uid == post?.userId ? (
-                <button onClick={deletePost}>
-                  <img src={delPost} alt="delete post icon" />
-                </button>
-              ) : null}
-            </div>
-          </div>
-          <div>
-            {isVisible ? (
-              <EditForm
-                setIsVisible={setIsVisible}
-                isVisible={isVisible}
-                post={post.content}
-                editPost={editPost}
-              />
-            ) : null}
-          </div>
+          ) : null}
+        </div>
+
+        <div>
+          {isVisible ? (
+            <EditForm
+              setIsVisible={setIsVisible}
+              isVisible={isVisible}
+              post={post.content}
+              editPost={editPost}
+            />
+          ) : null}
         </div>
       </div>
     </>

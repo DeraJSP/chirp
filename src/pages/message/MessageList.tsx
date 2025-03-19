@@ -13,8 +13,8 @@ import {
 } from "firebase/firestore";
 import TimeAndDate from "../../components/TimeAndDate";
 import del from "./img/del_msg.svg";
-import like from "../../components/img/like.svg";
-import unlike from "../../components/img/unlike.svg";
+import like from "../main/img/like.svg";
+import unlike from "../main/img/unlike.svg";
 
 export default function MessageList(props: {
   convoId: string;
@@ -140,7 +140,7 @@ export default function MessageList(props: {
                     }}
                   >
                     <div className="flex items-center gap-x-[1px]">
-                      <img src={like} className="w-6 m-1" alt="like" />
+                      <img src={like} className="m-1" alt="like" />
                       <p className="text-gray-600">
                         {messageLikes?.likes?.length}
                       </p>
@@ -153,7 +153,7 @@ export default function MessageList(props: {
                     }}
                   >
                     <div className="flex items-center gap-x-[1px]">
-                      <img src={unlike} className="w-6 m-1" alt="like" />
+                      <img src={unlike} className="m-1" alt="like" />
                       <p className="text-gray-600">
                         {messageLikes?.likes?.length}
                       </p>
@@ -180,7 +180,7 @@ export default function MessageList(props: {
                 {isLiked ? (
                   <button onClick={() => unlikeMessage()}>
                     <div className="flex items-center gap-x-[1px]">
-                      <img src={like} className="w-6 m-1" alt="like" />
+                      <img src={like} className="m-1" alt="like" />
                       <p className="text-gray-600">
                         {messageLikes?.likes?.length}
                       </p>
@@ -189,7 +189,7 @@ export default function MessageList(props: {
                 ) : (
                   <button onClick={() => likeMessage()}>
                     <div className="flex items-center gap-x-[1px]">
-                      <img src={unlike} className="w-6 m-1" alt="like" />
+                      <img src={unlike} className="m-1" alt="like" />
                       <p className="text-gray-600">
                         {messageLikes?.likes?.length}
                       </p>

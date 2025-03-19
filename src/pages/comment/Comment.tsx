@@ -21,6 +21,7 @@ import save from "../main/img/save.svg";
 import unsave from "../main/img/unsave.svg";
 import { CommentType } from "../../components/types/CommentType";
 import useDeleteDoc from "../../components/hooks/useDeleteDoc";
+import useBookmark from "../../components/hooks/useBookmark";
 
 interface Like {
   likeId: string;
@@ -31,9 +32,13 @@ interface Like {
 export default function Comment(props: CommentType) {
   const { ...comment } = props;
   const { delDoc } = useDeleteDoc("comments", comment.id);
+  const { addBookmark, delBookmark, isSaved } = useBookmark(
+    "bookmarks",
+    "commentId",
+    comment.id
+  );
   const [user] = useAuthState(auth);
 
-  const [isSaved, setIsSaved] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
   const editPost = async (commentUpdate: string) => {
@@ -42,70 +47,6 @@ export default function Comment(props: CommentType) {
       description: commentUpdate,
     });
   };
-
-  const addBookmark = async () => {
-    try {
-      const bookmarksRef = collection(db, `bookmarks`);
-      await addDoc(bookmarksRef, {
-        commentId: comment.id,
-        userId: user?.uid,
-        createdAt: serverTimestamp(),
-      });
-      setIsSaved(true);
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
-  };
-
-  const getAllBookmarks = async () => {
-    try {
-      const querySnapshot = query(
-        collection(db, `bookmarks`),
-        where("commentId", "==", comment.id),
-        where("userId", "==", user?.uid)
-      );
-      const data = await getDocs(querySnapshot);
-      return data.empty ? setIsSaved(false) : setIsSaved(true);
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
-  };
-
-  // const checkBookmark = async () => {
-  //   try {
-  //     const querySnapshot = query(
-  //       collection(db, `bookmarks`),
-  //       where("commentId", "==", comment.id),
-  //       where("userId", "==", user?.uid)
-  //     );
-  //     const data = await getDocsFromCache(querySnapshot);
-  //     return data.empty ? setIsSaved(false) : setIsSaved(true);
-  //   } catch (error) {
-  //     console.error(error);
-  //     return false;
-  //   }
-  // };
-
-  const delBookmark = async () => {
-    try {
-      const querySnapshot = query(
-        collection(db, `bookmarks`),
-        where("commentId", "==", comment.id),
-        where("userId", "==", user?.uid)
-      );
-      const data = await getDocs(querySnapshot);
-      await deleteDoc(doc(db, "bookmarks", data.docs[0].id));
-      setIsSaved(false);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    getAllBookmarks();
-  }, []);
 
   return (
     <>
@@ -129,17 +70,11 @@ export default function Comment(props: CommentType) {
           <p className="text-lg text-gray-700">{comment?.content}</p>
         </div>
 
-        <div className="flex items-center justify-center gap-x-6">
+        <div className="flex items-center justify-between gap-x-6 mx-12">
           <div>
             <Like postId={comment?.id} />
           </div>
 
-          {/* <div className="flex gap-x-2">
-            <img src={comment} alt="comment icon" className="w-5" />
-            <Link to={`/post/${post.id}`} state={{ currentPost: post }}>
-              <p className="text-gray-600">{countCheck()} </p>
-            </Link>{" "}
-          </div> */}
           <div>
             <button onClick={isSaved ? delBookmark : addBookmark}>
               {isSaved ? (
@@ -149,20 +84,23 @@ export default function Comment(props: CommentType) {
               )}
             </button>
           </div>
-          <div>
-            {user?.uid == comment?.userId ? (
+
+          {user?.uid == comment?.userId ? (
+            <div>
               <button onClick={() => setIsVisible(!isVisible)}>
                 <img src={editPostIcon} alt="edit post icon" />
               </button>
-            ) : null}
-          </div>
-          <div>
-            {user?.uid == comment?.userId ? (
+            </div>
+          ) : null}
+
+          {user?.uid == comment?.userId ? (
+            <div>
+              {" "}
               <button onClick={delDoc}>
                 <img src={delPost} alt="delete post icon" />
-              </button>
-            ) : null}
-          </div>
+              </button>{" "}
+            </div>
+          ) : null}
         </div>
         <div>
           {isVisible ? (
@@ -175,83 +113,6 @@ export default function Comment(props: CommentType) {
           ) : null}
         </div>
       </div>
-
-      {/* <div
-        className="w-full p-3 border-[1px] border-cGray-100 rounded-2xl bg-white"
-        key={post?.id}
-      >
-        <div className="flex items-center gap-x-2 mb-3">
-          <img
-            src={post?.userPhoto}
-            alt="profile picture thumbnail"
-            className="rounded-full w-11"
-          />
-          <div className="flex flex-col">
-            <Link to={`/profile/${post?.userId}`}>
-              <p className="font-bold text-lg text-gray-800">
-                @{post?.username}
-              </p>
-            </Link>
-            <p className="text-gray-600">
-              {" "}
-              <TimeAndDate postDate={postDate} />
-            </p>
-          </div>
-        </div>
-        <div className="flex flex-col items-start justify-center">
-          <div className="mb-5">
-            <Link to={`/post/${post.id}`} state={{ currentPost: post }}>
-              <p className="text-lg text-gray-800">{post?.description}</p>
-            </Link>
-          </div>
-
-          <div className="flex items-center justify-center gap-x-6">
-            <div>
-              <Like postId={post?.id} />
-            </div>
-
-            <div className="flex gap-x-2">
-              <img src={comment} alt="comment icon" className="w-5" />
-              <Link to={`/post/${post.id}`} state={{ currentPost: post }}>
-                <p className="text-gray-600">{countCheck()} </p>
-              </Link>{" "}
-            </div>
-            <div>
-              <button onClick={isSaved ? deleteSave : savePost}>
-                {!isSaved ? (
-                  <img src={save} alt="save post" />
-                ) : (
-                  <img src={unsave} alt="unsave post" />
-                )}
-              </button>
-            </div>
-            <div>
-              {user?.uid == post?.userId ? (
-                <button onClick={() => setIsVisible(!isVisible)}>
-                  <img src={editPostIcon} alt="edit post icon" />
-                </button>
-              ) : null}
-            </div>
-            <div>
-              {user?.uid == post?.userId ? (
-                <button onClick={deletePost}>
-                  <img src={delPost} alt="delete post icon" />
-                </button>
-              ) : null}
-            </div>
-          </div>
-          <div>
-            {isVisible ? (
-              <EditForm
-                setIsVisible={setIsVisible}
-                isVisible={isVisible}
-                post={post.description}
-                editPost={editPost}
-              />
-            ) : null}
-          </div>
-        </div>
-      </div> */}
     </>
   );
 }
