@@ -29,11 +29,11 @@ export default function Post(props: PostType) {
 
   const { addBookmark, delBookmark, isSaved } = useBookmark("postId", post.id);
   const { delDoc: deletePost } = useDeleteDoc("posts", post.id);
-  const { data: commentList } = useFetchDoc<CommentType>(
+  const { data: comments } = useFetchDoc<CommentType>(
     "comments",
     "postId",
     post.id,
-    post.id
+    ""
   );
   const [user] = useAuthState(auth);
 
@@ -47,7 +47,7 @@ export default function Post(props: PostType) {
     });
   };
 
-  const count = commentList?.length;
+  const count = comments?.length;
   const countCheck = () => `${count || 0 > 1 ? count : count}`;
 
   return (
@@ -60,6 +60,7 @@ export default function Post(props: PostType) {
           <img
             src={post?.userPhoto}
             alt="profile picture thumbnail"
+            referrerPolicy="no-referrer"
             className="rounded-full w-11"
           />
           <div className="flex flex-col">
