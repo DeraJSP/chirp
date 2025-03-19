@@ -1,17 +1,7 @@
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  query,
-  serverTimestamp,
-  updateDoc,
-  where,
-} from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import TimeAndDate from "../../components/TimeAndDate";
 import { auth, db } from "../../config/firebase";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Like from "../../components/Like";
 import delPost from "../main/img/del_post.svg";
