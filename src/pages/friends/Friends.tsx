@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FriendType } from "../../components/FriendType";
+import { FriendType } from "../../components/types/FriendType";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../../config/firebase";
 import {

@@ -12,7 +12,7 @@ import {
 } from "firebase/firestore";
 import * as yup from "yup";
 import close from "../../components/img/close.svg";
-import { ProfileType } from "../../components/ProfileType";
+import { ProfileType } from "../../components/types/ProfileType";
 
 export default function CreateMessage(props: {
   isVisible: boolean;
@@ -56,12 +56,12 @@ export default function CreateMessage(props: {
   const onCreateMessage = async (data: { content: string }) => {
     createConvoDoc();
 
-    const conversationRef = collection(
+    const messagesRef = collection(
       db,
       `conversations/${participantsId}/messages`
     );
 
-    await addDoc(conversationRef, {
+    await addDoc(messagesRef, {
       ...data,
       senderUsername: user?.displayName,
       senderId: user?.uid,
@@ -71,6 +71,7 @@ export default function CreateMessage(props: {
       recipientUserPhoto: profileData.userPhoto,
       sent: timestamp,
       read: false,
+      likes: [],
     });
 
     const convoDoc = doc(db, "conversations", `${participantsId}`);

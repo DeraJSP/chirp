@@ -7,7 +7,7 @@ import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import * as yup from "yup";
 
 interface createCommentData {
-  description: string;
+  content: string;
 }
 
 export default function CreateComment(props: { postId: string }) {
@@ -18,7 +18,7 @@ export default function CreateComment(props: { postId: string }) {
   const timestamp = serverTimestamp();
 
   const schema = yup.object().shape({
-    description: yup.string().required("You must add a description"),
+    content: yup.string().required("You must add a content"),
   });
 
   const {
@@ -29,7 +29,7 @@ export default function CreateComment(props: { postId: string }) {
     resolver: yupResolver(schema),
   });
 
-  const commentsRef = collection(db, `users/${user?.uid}/comments`);
+  const commentsRef = collection(db, `comments`);
 
   const onCreateComment = async (data: createCommentData) => {
     await addDoc(commentsRef, {
@@ -50,10 +50,10 @@ export default function CreateComment(props: { postId: string }) {
           <form onSubmit={handleSubmit(onCreateComment)}>
             <textarea
               placeholder="Post a comment"
-              {...register("description")}
+              {...register("content")}
               className="w-full h-40 text-lg p-3 border-[1px] border-cGray-100 rounded-2xl"
             />
-            <p className="text-red-500">{errors.description?.message}</p>
+            <p className="text-red-500">{errors.content?.message}</p>
             <button
               type="submit"
               className="bg-cBlue-100 border border-cBlue-200 px-8 py-1 rounded-xl font-bold text-lg text-gray-900"

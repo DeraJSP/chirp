@@ -1,5 +1,5 @@
 import { useState } from "react";
-import close from "../../components/img/close.svg";
+import close from "./img/close.svg";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";

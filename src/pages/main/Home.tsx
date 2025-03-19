@@ -1,15 +1,15 @@
-import { getDocs, collectionGroup } from "firebase/firestore";
+import { getDocs, collection } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { useEffect, useState } from "react";
 import Post from "./Post";
 import { CreateForm } from "../create-post/CreateForm";
-import { PostType } from "../../components/PostType";
+import { PostType } from "../../components/types/PostType";
 
 export default function Home() {
   const [postList, setPostList] = useState<PostType[] | null>(null);
 
   const getPost = async () => {
-    const postsRef = collectionGroup(db, "posts");
+    const postsRef = collection(db, "posts");
     const data = await getDocs(postsRef);
 
     const postDoc = data.docs.map((doc) => ({

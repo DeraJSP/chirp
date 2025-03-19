@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ConversationType } from "../../components/ConversationType";
+import { ConversationType } from "../../components/types/ConversationType";
 import TimeAndDate from "../../components/TimeAndDate";
 
 export default function Conversation(props: ConversationType) {
