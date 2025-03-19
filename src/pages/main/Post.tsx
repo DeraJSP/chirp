@@ -24,6 +24,7 @@ import editPostIcon from "./img/edit_post.svg";
 import EditForm from "../../components/EditForm";
 import save from "./img/save.svg";
 import unsave from "./img/unsave.svg";
+import useBookmark from "../../components/hooks/useBookmark";
 
 interface Like {
   likeId: string;
@@ -33,13 +34,13 @@ interface Like {
 
 export default function Post(props: PostType) {
   const { ...post } = props;
+  const { addBookmark, delBookmark, isSaved } = useBookmark("postId", post.id);
 
   const [user] = useAuthState(auth);
 
   const postDate = new Date(post.date.seconds * 1000);
 
   const [commentList, setCommentList] = useState<CommentType[] | null>(null);
-  const [isSaved, setIsSaved] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
   const editPost = async (postUpdate: string) => {

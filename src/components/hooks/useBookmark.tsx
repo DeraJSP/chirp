@@ -12,17 +12,13 @@ import { auth, db } from "../../config/firebase";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
-export default function useBookmark(
-  col: string,
-  fieldName: string,
-  docId: string
-) {
+export default function useBookmark(fieldName: string, docId: string) {
   const [isSaved, setIsSaved] = useState(false);
   const [user] = useAuthState(auth);
 
   const addBookmark = async () => {
     try {
-      const bookmarksRef = collection(db, col);
+      const bookmarksRef = collection(db, "bookmarks");
       await addDoc(bookmarksRef, {
         [fieldName]: docId,
         userId: user?.uid,
@@ -39,7 +35,7 @@ export default function useBookmark(
   const getBookmarks = async () => {
     try {
       const querySnapshot = query(
-        collection(db, col),
+        collection(db, "bookmarks"),
         where(fieldName, "==", docId),
         where("userId", "==", user?.uid)
       );
@@ -54,12 +50,12 @@ export default function useBookmark(
   const delBookmark = async () => {
     try {
       const querySnapshot = query(
-        collection(db, col),
+        collection(db, "bookmarks"),
         where(fieldName, "==", docId),
         where("userId", "==", user?.uid)
       );
       const data = await getDocs(querySnapshot);
-      await deleteDoc(doc(db, col, data.docs[0].id));
+      await deleteDoc(doc(db, "bookmarks", data.docs[0].id));
       setIsSaved(false);
     } catch (error) {
       console.error(error);

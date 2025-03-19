@@ -33,7 +33,6 @@ export default function Comment(props: CommentType) {
   const { ...comment } = props;
   const { delDoc } = useDeleteDoc("comments", comment.id);
   const { addBookmark, delBookmark, isSaved } = useBookmark(
-    "bookmarks",
     "commentId",
     comment.id
   );
