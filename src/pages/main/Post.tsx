@@ -17,12 +17,6 @@ import useBookmark from "../../components/hooks/useBookmark";
 import useDeleteDoc from "../../components/hooks/useDeleteDoc";
 import useFetchDoc from "../../components/hooks/useFetchDoc";
 
-interface Like {
-  likeId: string;
-  userId: string;
-  username: string;
-}
-
 export default function Post(props: PostType) {
   const { ...post } = props;
   const [isVisible, setIsVisible] = useState(false);
@@ -85,7 +79,7 @@ export default function Post(props: PostType) {
 
         <div className="flex items-center justify-between mx-10">
           <div>
-            <Like postId={post?.id} />
+            <Like docId={post?.id} />
           </div>
           <div className="flex gap-x-2">
             <img src={comment} alt="comment icon" className="w-5" />
