@@ -35,6 +35,7 @@ export const Navbar = () => {
               <img
                 src={user?.photoURL || ""}
                 alt="profile picture thumbnail"
+                referrerPolicy="no-referrer"
                 className="rounded-full w-8"
               />
               <p className="font-bold">{user?.displayName}</p>

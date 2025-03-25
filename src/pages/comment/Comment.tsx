@@ -13,12 +13,6 @@ import { CommentType } from "../../components/types/CommentType";
 import useDeleteDoc from "../../components/hooks/useDeleteDoc";
 import useBookmark from "../../components/hooks/useBookmark";
 
-interface Like {
-  likeId: string;
-  userId: string;
-  username: string;
-}
-
 export default function Comment(props: CommentType) {
   const { ...comment } = props;
   const { delDoc } = useDeleteDoc("comments", comment.id);
@@ -61,7 +55,7 @@ export default function Comment(props: CommentType) {
 
         <div className="flex items-center justify-between gap-x-6 mx-12">
           <div>
-            <Like postId={comment?.id} />
+            <Like docId={comment?.id} />
           </div>
 
           <div>

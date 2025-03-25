@@ -1,146 +1,153 @@
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ViewLikes from "../pages/create-post/ViewLikes";
 import like from "../pages/main/img/like.svg";
 import unlike from "../pages/main/img/unlike.svg";
 import {
   addDoc,
   collection,
-  collectionGroup,
   deleteDoc,
   doc,
+  // getDocFromCache,
   getDocs,
+  // getDocsFromCache,
+  onSnapshot,
   query,
+  serverTimestamp,
   where,
 } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
+import { LikeType } from "./types/LikeType";
+import useFetchDoc from "./hooks/useFetchDoc";
 
-interface Like {
-  likeId: string;
-  userId: string;
-  username: string;
-}
-
-// interface User {
-//   id: string;
-// }
-
-export default function Like(props: { postId: string }) {
+export default function Like(props: { docId: string }) {
+  const { docId } = props;
   const [user] = useAuthState(auth);
-
   const [isVisible, setIsVisible] = useState(false);
-  const [likes, setLikes] = useState<Like[] | null>(null);
-
-  const likesRef = collection(db, `users/${user?.uid}/likes`);
+  const { data: likes, setData: setLikes } = useFetchDoc<LikeType>(
+    "likes",
+    "likeId",
+    docId,
+    ""
+  );
 
   const addLike = async () => {
     try {
-      const newDoc = await addDoc(likesRef, {
+      const likesRef = collection(db, `likes`);
+      await addDoc(likesRef, {
         userId: user?.uid,
-        postId: props.postId,
+        likeId: docId,
         username: user?.displayName,
+        userPhoto: user?.photoURL,
+        createdAt: serverTimestamp(),
       });
-      if (user) {
-        setLikes((prev) =>
-          prev
-            ? [
-                ...prev,
-                {
-                  userId: user?.uid,
-                  likeId: newDoc.id,
-                  username: user?.displayName || "",
-                },
-              ]
-            : [
-                {
-                  userId: user?.uid,
-                  likeId: newDoc.id,
-                  username: user?.displayName || "",
-                },
-              ]
-        );
-      }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
   const removeLike = async () => {
     try {
-      const delLikeQuery = query(
-        likesRef,
-        where("postId", "==", props.postId),
+      const querySnapshot = query(
+        collection(db, "likes"),
+        where("likeId", "==", docId),
         where("userId", "==", user?.uid)
       );
-
-      const delData = await getDocs(delLikeQuery);
-      const likeId = delData.docs[0].id;
-      const delLike = doc(db, `users/${user?.uid}/likes`, delData.docs[0].id);
-      await deleteDoc(delLike);
-      if (user) {
-        setLikes(
-          (prev) => prev && prev.filter((like) => like.likeId !== likeId)
-        );
-      }
+      const data = await getDocs(querySnapshot);
+      await deleteDoc(doc(db, `likes`, data.docs[0].id));
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
-  const getLikes = async () => {
-    const data = query(
-      collectionGroup(db, "likes"),
-      where("postId", "==", props.postId)
-    );
+  // const getCacheLikes = async () => {
+  //   try {
+  //     const querySnapshot = query(
+  //       collection(db, "likes"),
+  //       where("likeId", "==", docId)
+  //     );
+  //     const data = await getDocsFromCache(querySnapshot);
+  //     const docData = data.docs.map((doc) => ({
+  //       ...doc.data(),
+  //     })) as LikeType[];
+  //     setLikes(docData);
+  //     // setLikes((prevDocs) => [...(prevDocs || []), ...docData]);
+  //     console.log(likes);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
-    const likeData = await getDocs(data);
-    const likeDocArr = likeData.docs.map((doc) => ({
-      likeId: doc.id,
-      ...doc.data(),
-    })) as Like[];
-    setLikes(likeDocArr);
+  // const unsubscribe = onSnapshot(querySnapshot, (snapshot) => {
+  //         const messagesDoc = snapshot.docs.map((doc) => ({
+  //           id: doc.id,
+  //           ...doc.data(),
+  //         })) as MessageType[];
+  //         setConvoMessages(messagesDoc);
+  //       });
 
-    // const userColRef = collection(db, "users");
-    // const data = await getDocs(userColRef);
-    // const userIdArr = data.docs.map((doc) => ({ id: doc.id }));
+  //       const getCacheLikes = async () => {
+  //         try {
+  //           const querySnapshot = query(
+  //             collection(db, "likes"),
+  //             where("likeId", "==", docId)
+  //           );
+  //           const data = await getDocsFromCache(querySnapshot);
+  //           const docData = data.docs.map((doc) => ({
+  //             ...doc.data(),
+  //           })) as LikeType[];
+  //           setLikes(docData);
+  //         } catch (error) {
+  //           console.error(error);
+  //         }
+  //       };
 
-    // const likeColRef = userIdArr?.map((user) => {
-    //   return collection(db, `users/${user.id}/likes`);
-    // });
+  const getCacheLikes = async () => {
+    try {
+      const querySnapshot = query(
+        collection(db, "likes"),
+        where("likeId", "==", docId)
+      );
+      const unsubscribe = onSnapshot(
+        querySnapshot,
+        // { source: "cache" },
+        (snapshot) => {
+          const docData = snapshot.docs.map((doc) => ({
+            ...doc.data(),
+          })) as LikeType[];
 
-    // const likesDoc = likeColRef?.map((likeCol) => {
-    //   return query(likeCol, where("postId", "==", props.postId));
-    // });
+          // setLikes((prevDocs) => [...(prevDocs || []), ...docData]);
+          setLikes(docData);
+        }
+      );
+      // console.log(likes);
 
-    // const likeDocArr = [];
-    // likeDocArr.push(...likesDoc);
-
-    // const allLikes = await Promise.all(
-    //   likeDocArr?.map(async (col) => {
-    //     const data = await getDocs(col);
-    //     return data.docs.map((doc) => ({
-    //       ...doc.data(),
-    //     })) as Like[];
-    //   })
-    // );
-
-    // // set the state to the userId of likers
-    // const likeDoc = [];
-    // likeDoc.push(...allLikes.flat());
-    // setLikes(likeDoc);
+      return () => {
+        unsubscribe();
+      };
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const hasUserLiked = likes?.find((like) => like.userId === user?.uid);
 
-  // run the getLikes function
-  useEffect(() => {
-    getLikes();
-  }, []);
-
   return (
     <>
       <div className="flex items-center justify-center gap-x-2">
-        <button onClick={hasUserLiked ? removeLike : addLike}>
+        <button
+          onClick={
+            hasUserLiked
+              ? () => {
+                  removeLike();
+                  getCacheLikes();
+                }
+              : () => {
+                  addLike();
+                  getCacheLikes();
+                }
+          }
+        >
           {hasUserLiked ? (
             <>
               <img src={like} alt="like" className="w-5" />
