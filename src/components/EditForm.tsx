@@ -8,16 +8,17 @@ import { PostType } from "./types/PostType";
 export default function EditForm(props: {
   isVisible: boolean;
   setIsVisible: (value: boolean) => void;
-  post: PostType;
+  doc: PostType;
   editPost: (col: string, docId: string, value: string) => void;
+  docCol: string;
 }) {
-  const { editPost, isVisible, setIsVisible, post } = props;
-  const [newValue, setNewValue] = useState(post.content);
+  const { editPost, isVisible, setIsVisible, doc, docCol } = props;
+  const [newValue, setNewValue] = useState(doc.content);
   const schema = yup.object().shape({
     content: yup.string().required("You must add a content"),
   });
   const onSubmit = () => {
-    editPost("posts", post.id, newValue);
+    editPost(docCol, doc.id, newValue);
   };
   const {
     register,
@@ -48,7 +49,7 @@ export default function EditForm(props: {
                 <textarea
                   placeholder="Edit your post"
                   {...register("content")}
-                  defaultValue={post.content}
+                  defaultValue={doc.content}
                   onChange={(e) => setNewValue(e.target.value)}
                   className="w-full h-64 text-lg p-3 border-[1px] border-cGray-100 rounded-2xl overflow-y-auto resize-none focus:border-cBlue-200 focus:outline-none focus:ring-0"
                 />

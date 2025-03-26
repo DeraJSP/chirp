@@ -131,8 +131,9 @@ export default function Post(props: PostType) {
             <EditForm
               setIsVisible={setIsVisible}
               isVisible={isVisible}
-              post={post}
+              doc={post}
               editPost={editPost}
+              docCol="posts"
             />
           ) : null}
         </div>
