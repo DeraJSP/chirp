@@ -90,8 +90,9 @@ export default function Comment(props: CommentType) {
             <EditForm
               setIsVisible={setIsVisible}
               isVisible={isVisible}
-              post={comment.content}
+              doc={comment}
               editPost={editPost}
+              docCol="comments"
             />
           ) : null}
         </div>

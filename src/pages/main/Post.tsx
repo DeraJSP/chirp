@@ -1,6 +1,6 @@
-import { doc, updateDoc } from "firebase/firestore";
+// import { doc, updateDoc } from "firebase/firestore";
 import TimeAndDate from "../../components/TimeAndDate";
-import { auth, db } from "../../config/firebase";
+import { auth } from "../../config/firebase";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -16,6 +16,7 @@ import unsave from "./img/unsave.svg";
 import useBookmark from "../../components/hooks/useBookmark";
 import useDeleteDoc from "../../components/hooks/useDeleteDoc";
 import useFetchDoc from "../../components/hooks/useFetchDoc";
+import useEditDoc from "../../components/hooks/useEditDoc";
 
 export default function Post(props: PostType) {
   const { ...post } = props;
@@ -29,17 +30,22 @@ export default function Post(props: PostType) {
     post.id,
     ""
   );
+  const { editDoc: editPost } = useEditDoc();
   const [user] = useAuthState(auth);
 
   const postDate = new Date(post.date.seconds * 1000);
 
-  const editPost = async (postUpdate: string) => {
-    const postDoc = doc(db, `users/${user?.uid}/posts`, post.id);
+  // const editPost = async (postUpdate: string) => {
+  //   try {
+  //     const postDoc = doc(db, `posts`, post.id);
 
-    await updateDoc(postDoc, {
-      description: postUpdate,
-    });
-  };
+  //     await updateDoc(postDoc, {
+  //       content: postUpdate,
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const count = comments?.length;
   const countCheck = () => `${count || 0 > 1 ? count : count}`;
@@ -119,8 +125,9 @@ export default function Post(props: PostType) {
             <EditForm
               setIsVisible={setIsVisible}
               isVisible={isVisible}
-              post={post.content}
+              doc={post}
               editPost={editPost}
+              docCol="posts"
             />
           ) : null}
         </div>
