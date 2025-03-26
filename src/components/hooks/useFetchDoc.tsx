@@ -18,11 +18,11 @@ export default function useFetchDoc<T>(
       );
 
       const dataArr = await getDocs(querySnapshot);
-      const doc = dataArr.docs.map((doc) => ({
+      const docData = dataArr.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       })) as T[];
-      setData(doc);
+      setData(docData);
     } catch (error) {
       console.error(error);
     }
@@ -32,5 +32,5 @@ export default function useFetchDoc<T>(
     getDoc();
   }, [trigger]);
 
-  return { data };
+  return { data, setData };
 }
