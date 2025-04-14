@@ -1,6 +1,5 @@
-import { doc, updateDoc } from "firebase/firestore";
 import TimeAndDate from "../../components/TimeAndDate";
-import { auth, db } from "../../config/firebase";
+import { auth } from "../../config/firebase";
 import { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Like from "../../components/Like";
@@ -12,45 +11,48 @@ import unsave from "../main/img/unsave.svg";
 import { CommentType } from "../../components/types/CommentType";
 import useDeleteDoc from "../../components/hooks/useDeleteDoc";
 import useBookmark from "../../components/hooks/useBookmark";
+import useEditDoc from "../../components/hooks/useEditDoc";
 
-export default function Comment(props: CommentType) {
-  const { ...comment } = props;
+export default function Comment(props: { comment: CommentType }) {
+  const { comment } = props;
   const { delDoc } = useDeleteDoc("comments", comment.id);
   const { addBookmark, delBookmark, isSaved } = useBookmark(
     "commentId",
     comment.id
   );
+  const { editDoc } = useEditDoc();
+
   const [user] = useAuthState(auth);
 
   const [isVisible, setIsVisible] = useState(false);
-
-  const editPost = async (commentUpdate: string) => {
-    const commentDoc = doc(db, `comments`, comment.id);
-    await updateDoc(commentDoc, {
-      description: commentUpdate,
-    });
-  };
 
   return (
     <>
       <div className="bg-white w-full border-[1px] border border-cGray-100 rounded-2xl p-3 mb-5">
         <div className="flex items-center justify-start gap-x-2 mb-2">
           <img
-            src={comment?.userPhoto}
+            src={comment.userPhoto}
             alt="profile picture thumbnail"
             className="rounded-full w-11"
+            referrerPolicy="no-referrer"
           />
           <div className="flex flex-col justify-center">
             <p className="text-lg font-bold text-gray-700">
-              {comment?.username}
+              {comment.username}
             </p>
             <p className="text-gray-600">
-              <TimeAndDate postDate={comment.date.toDate()} />
+              <TimeAndDate
+                docDate={
+                  comment.createdAt
+                    ? new Date(comment?.createdAt.seconds * 1000)
+                    : new Date()
+                }
+              />
             </p>
           </div>
         </div>
         <div className="rounded-xl p-3">
-          <p className="text-lg text-gray-700">{comment?.content}</p>
+          <p className="text-lg text-gray-700">{comment.content}</p>
         </div>
 
         <div className="flex items-center justify-between gap-x-6 mx-12">
@@ -68,7 +70,7 @@ export default function Comment(props: CommentType) {
             </button>
           </div>
 
-          {user?.uid == comment?.userId ? (
+          {user?.uid == comment.userId ? (
             <div>
               <button onClick={() => setIsVisible(!isVisible)}>
                 <img src={editPostIcon} alt="edit post icon" />
@@ -76,7 +78,7 @@ export default function Comment(props: CommentType) {
             </div>
           ) : null}
 
-          {user?.uid == comment?.userId ? (
+          {user?.uid == comment.userId ? (
             <div>
               {" "}
               <button onClick={delDoc}>
@@ -91,7 +93,7 @@ export default function Comment(props: CommentType) {
               setIsVisible={setIsVisible}
               isVisible={isVisible}
               doc={comment}
-              editPost={editPost}
+              editDoc={editDoc}
               docCol="comments"
             />
           ) : null}

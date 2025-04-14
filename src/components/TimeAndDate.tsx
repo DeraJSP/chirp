@@ -1,5 +1,5 @@
-export default function TimeAndDate(props: { postDate: Date }) {
-  const { postDate } = props;
+export default function TimeAndDate(props: { docDate: Date }) {
+  const { docDate } = props;
   const currentDate = new Date();
 
   const month = [
@@ -19,15 +19,15 @@ export default function TimeAndDate(props: { postDate: Date }) {
 
   const showTime = (currentDate: Date) =>
     `${
-      postDate.getFullYear() === currentDate.getFullYear()
-        ? postDate.toLocaleDateString() === currentDate.toLocaleDateString()
-          ? postDate.toTimeString().slice(0, 5)
-          : postDate.getDate() + " " + month[postDate.getMonth()]
-        : postDate.getDate() +
+      docDate.getFullYear() === currentDate.getFullYear()
+        ? docDate.toLocaleDateString() === currentDate.toLocaleDateString()
+          ? docDate.toTimeString().slice(0, 5)
+          : docDate.getDate() + " " + month[docDate.getMonth()]
+        : docDate.getDate() +
           " " +
-          month[postDate.getMonth()] +
+          month[docDate.getMonth()] +
           ", " +
-          postDate.getFullYear()
+          docDate.getFullYear()
     }`;
   return <>{showTime(currentDate)}</>;
 }

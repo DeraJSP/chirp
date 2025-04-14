@@ -121,7 +121,7 @@ export default function MessageList(props: {
               <p>{message.content}</p>
               <p className="text-gray-500 text-sm italic mt-2">
                 <TimeAndDate
-                  postDate={
+                  docDate={
                     message.sent
                       ? new Date(message?.sent.seconds * 1000)
                       : new Date()
@@ -203,7 +203,7 @@ export default function MessageList(props: {
             <div>
               <p>{message.content}</p>
               <p className="text-gray-500 text-sm italic mt-2">
-                <TimeAndDate postDate={new Date(message.sent.seconds * 1000)} />
+                <TimeAndDate docDate={new Date(message.sent.seconds * 1000)} />
               </p>
             </div>
           </div>

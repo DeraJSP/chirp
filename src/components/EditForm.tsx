@@ -9,16 +9,16 @@ export default function EditForm(props: {
   isVisible: boolean;
   setIsVisible: (value: boolean) => void;
   doc: PostType;
-  editPost: (col: string, docId: string, value: string) => void;
+  editDoc: (col: string, docId: string, value: string) => void;
   docCol: string;
 }) {
-  const { editPost, isVisible, setIsVisible, doc, docCol } = props;
+  const { editDoc, isVisible, setIsVisible, doc, docCol } = props;
   const [newValue, setNewValue] = useState(doc.content);
   const schema = yup.object().shape({
     content: yup.string().required("You must add a content"),
   });
   const onSubmit = () => {
-    editPost(docCol, doc.id, newValue);
+    editDoc(docCol, doc.id, newValue);
   };
   const {
     register,

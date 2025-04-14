@@ -7,7 +7,7 @@ import CurrentConvo from "./pages/message/CurrentConvo";
 import { Navbar } from "./components/Navbar";
 import CreatePost from "./pages/create-post/CreatePost";
 import "./App.css";
-import CurrentPost from "./pages/comment/CurrentPost";
+import PostView from "./pages/comment/PostView";
 
 // import SideBar from "./components/SideBar";
 
@@ -24,8 +24,8 @@ function App() {
                 <Route path="*" element={<p>There's nothing here!</p>} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/" element={<Home />} />
-                <Route path="/post" element={<CurrentPost />}>
-                  <Route path=":postId" element={<CurrentPost />} />
+                <Route path="/post" element={<PostView />}>
+                  <Route path=":postId" element={<PostView />} />
                 </Route>
 
                 <Route path="/profile" element={<Profile />}>
