@@ -1,18 +1,17 @@
-import { auth, db } from "../../config/firebase";
+import { db } from "../../config/firebase";
 import {
-  addDoc,
   collection,
   doc,
   getDoc,
   getDocs,
-  serverTimestamp,
+  query,
+  where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Post from "../main/Post";
 import { PostType } from "../../components/types/PostType";
 import cover from "./img/cover.png";
-import addfriend from "./img/add_friend.svg";
 import friends from "./img/friends.svg";
 import birthday from "./img/birthday.svg";
 import location from "./img/location.svg";
@@ -20,53 +19,44 @@ import calender from "./img/calender.svg";
 import message from "./img/message.svg";
 import PreviousPage from "../../components/PreviousPage";
 import CreateMessage from "../message/CreateMessage";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { ProfileType } from "../../components/types/ProfileType";
+import FriendRequests from "./FriendRequests";
 
 export default function Profile() {
   const [profileData, setProfileData] = useState<ProfileType | null>(null);
   const [toggleState, setToggleState] = useState(1);
   const [isVisible, setIsVisible] = useState(false);
+  const [postList, setPostList] = useState<PostType[] | null>(null);
 
   const params = useParams<{ userId: string }>();
   const profileUid = params.userId || "";
-  const [user] = useAuthState(auth);
 
   const getProfileData = async () => {
-    const userRef = doc(db, "users", profileUid);
-    const userDoc = await getDoc(userRef);
-    setProfileData({ ...userDoc.data() } as ProfileType);
+    try {
+      const docRef = doc(db, "users", profileUid);
+      const docSnap = await getDoc(docRef);
+      setProfileData({ ...docSnap.data() } as ProfileType);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const [postList, setPostList] = useState<PostType[] | null>(null);
   const getPost = async () => {
-    const postsRef = collection(db, `users/${profileUid}/posts`);
-    const data = await getDocs(postsRef);
+    try {
+      const querySnapshot = query(
+        collection(db, "posts"),
+        where("userId", "==", profileUid)
+      );
+      const data = await getDocs(querySnapshot);
 
-    const postDoc = data.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as PostType[];
-    setPostList(postDoc);
-  };
-
-  const sendRequest = async () => {
-    const senderRef = collection(db, `users/${user?.uid}/friends`);
-    const receieverRef = collection(db, `users/${profileUid}/friends`);
-    const refArr = [senderRef, receieverRef];
-
-    await Promise.all(
-      refArr?.map(async (ref) => {
-        await addDoc(ref, {
-          senderId: user?.uid,
-          senderUsername: user?.displayName,
-          senderPhoto: user?.photoURL,
-          receiverId: profileUid,
-          accepted: false,
-          createdAt: serverTimestamp(),
-        });
-      })
-    );
+      const postDoc = data.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as PostType[];
+      setPostList(postDoc);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
@@ -116,25 +106,17 @@ export default function Profile() {
                     </div>
                   </button>
                   <div>
-                    {isVisible ? (
+                    {isVisible && profileData ? (
                       <CreateMessage
                         setIsVisible={setIsVisible}
                         isVisible={isVisible}
-                        profileData={profileData as ProfileType}
+                        profileData={profileData}
                       />
                     ) : null}
                   </div>
                 </div>
                 <div>
-                  <button
-                    onClick={sendRequest}
-                    className="hover:bg-cBlue-100 border border-cBlue-200 mb-3 px-3 py-1 rounded-xl font-bold text-gray-700"
-                  >
-                    <div className="flex items-center gap-x-3">
-                      <img src={addfriend} alt="Add friend icon" />
-                      <p>Add friend</p>
-                    </div>
-                  </button>
+                  {profileData && <FriendRequests profileData={profileData} />}
                 </div>
               </div>
               <div className="flex items-center gap-x-3 gap-x-2">
@@ -193,7 +175,7 @@ export default function Profile() {
             </button>{" "}
           </div>
           {toggleState === 1 ? (
-            postList?.map((post) => <Post key={post.id} {...post} />)
+            postList?.map((post) => <Post key={post.id} post={post} />)
           ) : (
             <div>Friends</div>
           )}

@@ -62,6 +62,7 @@ export default function PostDetails(props: { post: PostType; count: number }) {
 
   useEffect(() => {
     getPost();
+    getCacheDoc();
   }, []);
 
   // useEffect(() => {

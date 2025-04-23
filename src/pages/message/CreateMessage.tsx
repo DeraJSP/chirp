@@ -22,8 +22,6 @@ export default function CreateMessage(props: {
   const { profileData, setIsVisible, isVisible } = props;
   const [user] = useAuthState(auth);
 
-  const timestamp = serverTimestamp();
-
   const schema = yup.object().shape({
     content: yup.string().required("You must add a message content"),
   });
@@ -36,12 +34,11 @@ export default function CreateMessage(props: {
     resolver: yupResolver(schema),
   });
 
-  const participantsId = [user?.uid, profileData.id];
-  participantsId.sort().join("");
+  const docId = [user?.uid, profileData.id];
 
   const createConvoDoc = async () => {
     const conversationRef = collection(db, `conversations`);
-    await setDoc(doc(conversationRef, `${participantsId}`), {
+    await setDoc(doc(conversationRef, `${docId.sort().join("")}`), {
       senderUsername: user?.displayName,
       senderId: user?.uid,
       senderUserPhoto: user?.photoURL,
@@ -49,7 +46,7 @@ export default function CreateMessage(props: {
       recipientUsername: profileData.username,
       recipientUserPhoto: profileData.userPhoto,
       lastMessage: "",
-      createdAt: timestamp,
+      createdAt: serverTimestamp(),
     });
   };
 
@@ -58,7 +55,7 @@ export default function CreateMessage(props: {
 
     const messagesRef = collection(
       db,
-      `conversations/${participantsId}/messages`
+      `conversations/${docId.sort().join("")}/messages`
     );
 
     await addDoc(messagesRef, {
@@ -69,17 +66,17 @@ export default function CreateMessage(props: {
       recipientId: profileData.id,
       recipientUsername: profileData.username,
       recipientUserPhoto: profileData.userPhoto,
-      sent: timestamp,
+      sent: serverTimestamp(),
       read: false,
       likes: [],
     });
 
-    const convoDoc = doc(db, "conversations", `${participantsId}`);
+    const convoDoc = doc(db, "conversations", `${docId.sort().join("")}`);
 
     await updateDoc(convoDoc, {
       lastMessage: {
         content: data.content,
-        sent: timestamp,
+        sent: serverTimestamp(),
       },
     });
   };

@@ -29,7 +29,6 @@ export default function Post(props: { post: PostType }) {
 
   const { editDoc } = useEditDoc();
   const [user] = useAuthState(auth);
-
   const count = comments?.length;
   const data = { comments, post, count };
   // const countCheck = () => `${count || 0 > 1 ? count : count}`;
@@ -52,7 +51,7 @@ export default function Post(props: { post: PostType }) {
             className="rounded-full w-11"
           />
           <div className="flex flex-col">
-            <Link to={`/profile/${post?.userId}`}>
+            <Link to={`/profile/${post.userId}`}>
               <p className="font-bold text-lg text-gray-800">
                 @{post.username}
               </p>
