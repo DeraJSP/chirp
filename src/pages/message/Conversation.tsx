@@ -5,17 +5,13 @@ import TimeAndDate from "../../components/TimeAndDate";
 export default function Conversation(props: ConversationType) {
   const { role, ...convo } = props;
 
-  // const participantId = role === "sender" ? convo.senderId : convo.recipientId;
   const participantPhoto =
     role === "sender" ? convo.senderUserPhoto : convo.recipientUserPhoto;
   const participantUsername =
     role === "sender" ? convo.senderUsername : convo.recipientUsername;
 
-  const sentDate = new Date(convo.lastMessage.sent.seconds * 1000);
-
   return (
     <>
-      {" "}
       <div
         className="w-full p-3 border-[1px] border-cGray-100 rounded-2xl bg-white"
         key={convo.id}
@@ -36,7 +32,9 @@ export default function Conversation(props: ConversationType) {
                   {participantUsername}
                 </p>
                 <p className="text-gray-700">
-                  <TimeAndDate postDate={sentDate} />
+                  <TimeAndDate
+                    docDate={new Date(convo.lastMessage.sent.seconds * 1000)}
+                  />
                 </p>
               </div>
               <div className="text-gray-600 italic w-full">

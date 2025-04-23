@@ -6,6 +6,6 @@ export interface CommentType {
   username: string;
   content: string;
   userPhoto: string;
-  date: Timestamp;
+  createdAt: Timestamp;
   postId: string;
 }

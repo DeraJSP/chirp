@@ -4,15 +4,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db, auth } from "../../config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useNavigate } from "react-router-dom";
-
-interface CreateFormData {
-  content: string;
-}
 
 export const CreateForm = () => {
-  const navigate = useNavigate();
-
   const [user] = useAuthState(auth);
 
   const timestamp = serverTimestamp();
@@ -29,22 +22,20 @@ export const CreateForm = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<CreateFormData>({
+  } = useForm<{ content: string }>({
     resolver: yupResolver(schema),
   });
 
   const postsRef = collection(db, `posts`);
 
-  const onCreatePost = async (data: CreateFormData) => {
+  const onCreatePost = async (data: { content: string }) => {
     await addDoc(postsRef, {
       ...data,
       username: user?.displayName,
       userId: user?.uid,
       userPhoto: user?.photoURL,
-      date: timestamp,
+      createdAt: timestamp,
     });
-
-    navigate("/");
   };
 
   return (
@@ -53,9 +44,9 @@ export const CreateForm = () => {
         <div className="w-2/5">
           <form onSubmit={handleSubmit(onCreatePost)}>
             <textarea
-              placeholder="What's on your mind?"
+              placeholder="Make a post"
               {...register("content")}
-              className="w-full h-64 text-lg p-3 border-[1px] border-cGray-100 rounded-2xl"
+              className="w-full h-40 text-lg p-3 border-[1px] border-cGray-100 rounded-2xl overflow-y-auto resize-none focus:border-cBlue-200 focus:outline-none focus:ring-0"
             />
             <p className="text-red-500">{errors.content?.message}</p>
             <button

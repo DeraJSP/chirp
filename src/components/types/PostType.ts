@@ -6,5 +6,5 @@ export interface PostType {
   username: string;
   content: string;
   userPhoto: string;
-  date: Timestamp;
+  createdAt: Timestamp;
 }

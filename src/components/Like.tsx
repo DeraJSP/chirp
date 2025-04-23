@@ -1,5 +1,5 @@
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ViewLikes from "../pages/create-post/ViewLikes";
 import like from "../pages/main/img/like.svg";
 import unlike from "../pages/main/img/unlike.svg";
@@ -24,12 +24,11 @@ export default function Like(props: { docId: string }) {
   const { docId } = props;
   const [user] = useAuthState(auth);
   const [isVisible, setIsVisible] = useState(false);
-  const { data: likes, setData: setLikes } = useFetchDoc<LikeType>(
-    "likes",
-    "likeId",
-    docId,
-    ""
-  );
+  const {
+    data: likes,
+    setData: setLikes,
+    getDoc: getLikes,
+  } = useFetchDoc<LikeType>("likes");
 
   const addLike = async () => {
     try {
@@ -131,7 +130,9 @@ export default function Like(props: { docId: string }) {
   };
 
   const hasUserLiked = likes?.find((like) => like.userId === user?.uid);
-
+  useEffect(() => {
+    getLikes("likeId", docId);
+  }, []);
   return (
     <>
       <div className="flex items-center justify-center gap-x-2">
