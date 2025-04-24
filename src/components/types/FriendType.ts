@@ -10,5 +10,7 @@ export interface FriendType {
   receiverPhoto: string;
   status: "pending" | "accepted";
   userIdPair: string;
+  friendship: string[];
   sentAt: Timestamp;
+  acceptedAt: Timestamp;
 }

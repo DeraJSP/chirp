@@ -12,7 +12,7 @@ import { useParams } from "react-router-dom";
 import Post from "../main/Post";
 import { PostType } from "../../components/types/PostType";
 import cover from "./img/cover.png";
-import friends from "./img/friends.svg";
+import friends_icon from "./img/friends.svg";
 import birthday from "./img/birthday.svg";
 import location from "./img/location.svg";
 import calender from "./img/calender.svg";
@@ -21,15 +21,21 @@ import PreviousPage from "../../components/PreviousPage";
 import CreateMessage from "../message/CreateMessage";
 import { ProfileType } from "../../components/types/ProfileType";
 import FriendRequests from "./FriendRequests";
+import Friends from "./Friends";
 
 export default function Profile() {
   const [profileData, setProfileData] = useState<ProfileType | null>(null);
   const [toggleState, setToggleState] = useState(1);
   const [isVisible, setIsVisible] = useState(false);
   const [postList, setPostList] = useState<PostType[] | null>(null);
+  // const [friends, setFriendsList] = useState<FriendType[] | null>(null);
 
   const params = useParams<{ userId: string }>();
   const profileUid = params.userId || "";
+  // const user = JSON.parse(localStorage.getItem("user") || "{}");
+  // const userId = user?.uid || null;
+  // const usersIdArr = [user?.uid, profileData?.id];
+  // const userIdPair = usersIdArr.sort().join("");
 
   const getProfileData = async () => {
     try {
@@ -59,9 +65,28 @@ export default function Profile() {
     }
   };
 
+  // const getFriends = async () => {
+  //   try {
+  //     const querySnapshot = query(
+  //       collection(db, "friends"),
+  //       where("friendship", "array-contains", profileUid),
+  //       where("status", "==", "accepted")
+  //     );
+  //     const data = await getDocs(querySnapshot);
+  //     const friendDoc = data.docs.map((doc) => ({
+  //       id: doc.id,
+  //       ...doc.data(),
+  //     })) as FriendType[];
+  //     setFriendsList(friendDoc);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
   useEffect(() => {
     getProfileData();
     getPost();
+    // getFriends();
   }, []);
 
   return (
@@ -127,7 +152,7 @@ export default function Profile() {
               </div>
               <div className="flex items-center">
                 <div className="flex items-center gap-x-3">
-                  <img src={friends} alt="Friends icon" />
+                  <img src={friends_icon} alt="Friends icon" />
                   <p className="text-gray-600">
                     Friends:<span className="ml-2">{profileData?.email}</span>
                   </p>{" "}
@@ -172,15 +197,17 @@ export default function Profile() {
               }
             >
               <p>Friends</p>
-            </button>{" "}
+            </button>
           </div>
           {toggleState === 1 ? (
             postList?.map((post) => <Post key={post.id} post={post} />)
           ) : (
-            <div>Friends</div>
+            <div className="w-full">
+              {profileData && <Friends profileData={profileData} />}
+            </div>
           )}
         </div>
-      </section>{" "}
+      </section>
     </>
   );
 }
