@@ -7,11 +7,8 @@ import { PostType } from "../../components/types/PostType";
 import useFetchDoc from "../../components/hooks/useFetchDoc";
 
 export default function Home() {
-  const {
-    data: postList,
-    setData: setPostList,
-    // getCacheDoc,
-  } = useFetchDoc<PostType>("posts");
+  const { data: postList, setData: setPostList } =
+    useFetchDoc<PostType>("posts");
 
   const getPost = async () => {
     const postsRef = collection(db, "posts");
