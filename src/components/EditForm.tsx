@@ -35,12 +35,12 @@ export default function EditForm(props: {
   return (
     <>
       {isVisible ? (
-        <div className="fixed top-0 left-0 w-full h-screen my-12 bg-black bg-opacity-50bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="fixed top-0 left-0 w-full h-screen my-12 bg-black bg-opacity-50 bg-black flex items-center justify-center">
           <div className="relative p-8 bg-white shadow-xl w-2/5 h-96 rounded-2xl border-[1px] border-cGray-100">
             <button
               type="button"
               onClick={() => setIsVisible(!isVisible)}
-              className="absolute top-3 right-3 "
+              className="absolute top-3 right-3 hover:bg-cGray-100 rounded-full p-1"
             >
               <img src={close} alt="Close popup" className="w-9" />
             </button>
