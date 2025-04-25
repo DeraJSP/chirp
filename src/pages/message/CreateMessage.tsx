@@ -88,7 +88,7 @@ export default function CreateMessage(props: {
             <button
               type="button"
               onClick={() => setIsVisible(!isVisible)}
-              className="absolute top-3 right-3 "
+              className="absolute top-3 right-3 hover:bg-cGray-100 rounded-full p-1"
             >
               <img src={close} alt="close popup" className="w-9" />
             </button>

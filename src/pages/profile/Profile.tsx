@@ -1,4 +1,4 @@
-import { db } from "../../config/firebase";
+import { auth, db } from "../../config/firebase";
 import {
   collection,
   doc,
@@ -19,14 +19,19 @@ import calender from "./img/calender.svg";
 import message from "./img/message.svg";
 import PreviousPage from "../../components/PreviousPage";
 import CreateMessage from "../message/CreateMessage";
-import { ProfileType } from "../../components/types/ProfileType";
 import FriendRequests from "./FriendRequests";
 import Friends from "./Friends";
+import { useAuthState } from "react-firebase-hooks/auth";
+import EditProfile from "./EditProfile";
+import { UserType } from "../../components/types/UserType";
+import TimeAndDate from "../../components/TimeAndDate";
 
 export default function Profile() {
-  const [profileData, setProfileData] = useState<ProfileType | null>(null);
+  const [profileData, setProfileData] = useState<UserType | null>(null);
+  const [userData, setUserData] = useState<UserType | null>(null);
   const [toggleState, setToggleState] = useState(1);
   const [isVisible, setIsVisible] = useState(false);
+  const [showProfileEdit, setShowProfileEdit] = useState(false);
   const [postList, setPostList] = useState<PostType[] | null>(null);
   // const [friends, setFriendsList] = useState<FriendType[] | null>(null);
 
@@ -36,12 +41,13 @@ export default function Profile() {
   // const userId = user?.uid || null;
   // const usersIdArr = [user?.uid, profileData?.id];
   // const userIdPair = usersIdArr.sort().join("");
+  const [user] = useAuthState(auth);
 
   const getProfileData = async () => {
     try {
       const docRef = doc(db, "users", profileUid);
       const docSnap = await getDoc(docRef);
-      setProfileData({ ...docSnap.data() } as ProfileType);
+      setProfileData({ ...docSnap.data() } as UserType);
     } catch (error) {
       console.error(error);
     }
@@ -65,29 +71,32 @@ export default function Profile() {
     }
   };
 
-  // const getFriends = async () => {
-  //   try {
-  //     const querySnapshot = query(
-  //       collection(db, "friends"),
-  //       where("friendship", "array-contains", profileUid),
-  //       where("status", "==", "accepted")
-  //     );
-  //     const data = await getDocs(querySnapshot);
-  //     const friendDoc = data.docs.map((doc) => ({
-  //       id: doc.id,
-  //       ...doc.data(),
-  //     })) as FriendType[];
-  //     setFriendsList(friendDoc);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+  const getUserData = async () => {
+    try {
+      if (user?.uid == profileUid) {
+        const docSnap = doc(db, `users/${user?.uid}`);
+        const data = await getDoc(docSnap);
+
+        const userDoc = {
+          ...data.data(),
+        } as UserType;
+        setUserData(userDoc);
+      } else {
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     getProfileData();
     getPost();
-    // getFriends();
-  }, []);
+  }, [profileUid]);
+
+  useEffect(() => {
+    getUserData();
+  }, [user?.uid]);
 
   return (
     <>
@@ -112,42 +121,70 @@ export default function Profile() {
       <section>
         <div className="w-1/2 mx-auto mt-8">
           <div>
-            <p>
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quaerat
-              sequi corporis similique doloremque nemo incidunt atque illum
-              reiciendis ab animi eos cum quisquam aliquam quidem totam, fugiat
-              beatae minus quam?
-            </p>
-            <div className="flex flex-col gap-y-3 mt-10">
-              <div className="flex gap-x-5">
-                <div>
+            <p>{profileData?.bio}</p>
+            <div className="flex flex-col gap-y-3 mt-5">
+              {user?.uid == profileUid ? (
+                <div className="mb-3">
                   <button
-                    onClick={() => setIsVisible(!isVisible)}
-                    className="hover:bg-cBlue-100 border border-cBlue-200 mb-3 px-3 py-1 rounded-xl font-bold text-gray-700"
+                    onClick={() => setShowProfileEdit(!showProfileEdit)}
+                    className="hover:bg-cBlue-100 border border-cBlue-200 px-3 py-1 rounded-xl font-bold text-gray-700"
                   >
-                    <div className="flex items-center gap-x-3">
-                      <img src={message} alt="Message icon" />
-                      <p>Message</p>
-                    </div>
+                    Edit Profile
                   </button>
                   <div>
-                    {isVisible && profileData ? (
-                      <CreateMessage
-                        setIsVisible={setIsVisible}
-                        isVisible={isVisible}
-                        profileData={profileData}
+                    {showProfileEdit && userData ? (
+                      <EditProfile
+                        setShowProfileEdit={setShowProfileEdit}
+                        showProfileEdit={showProfileEdit}
+                        userData={userData}
                       />
                     ) : null}
                   </div>
                 </div>
-                <div>
-                  {profileData && <FriendRequests profileData={profileData} />}
+              ) : (
+                <div className="flex gap-x-5">
+                  <div>
+                    <button
+                      onClick={() => setIsVisible(!isVisible)}
+                      className="hover:bg-cBlue-100 border border-cBlue-200 mb-3 px-3 py-1 rounded-xl font-bold text-gray-700"
+                    >
+                      <div className="flex items-center gap-x-3">
+                        <img src={message} alt="Message icon" />
+                        <p>Message</p>
+                      </div>
+                    </button>
+                    <div>
+                      {isVisible && profileData ? (
+                        <CreateMessage
+                          setIsVisible={setIsVisible}
+                          isVisible={isVisible}
+                          profileData={profileData}
+                        />
+                      ) : null}
+                    </div>
+                  </div>
+                  <div>
+                    {profileData && (
+                      <FriendRequests profileData={profileData} />
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
               <div className="flex items-center gap-x-3 gap-x-2">
                 <img src={calender} alt="calender icon" />
                 <p className="text-gray-600">
-                  Joined: <span className="ml-2">{profileData?.email}</span>
+                  Joined:{" "}
+                  <span className="ml-2">
+                    {
+                      <TimeAndDate
+                        docDate={
+                          profileData?.joinedAt
+                            ? new Date(profileData?.joinedAt.seconds * 1000)
+                            : new Date()
+                        }
+                      />
+                    }
+                  </span>
                 </p>
               </div>
               <div className="flex items-center">
@@ -161,14 +198,15 @@ export default function Profile() {
               <div className="flex items-center gap-x-3">
                 <img src={birthday} alt="" />
                 <p className="text-gray-600">
-                  Birthday: <span className="ml-2">{profileData?.email}</span>
+                  Birthday:{" "}
+                  <span className="ml-2">{profileData?.birthday}</span>
                 </p>
               </div>
               <div className="flex items-center gap-x-3">
-                {" "}
                 <img src={location} alt="" />
                 <p className="text-gray-600">
-                  Location: <span className="ml-2">{profileData?.email}</span>
+                  Location:{" "}
+                  <span className="ml-2">{profileData?.location}</span>
                 </p>
               </div>
             </div>

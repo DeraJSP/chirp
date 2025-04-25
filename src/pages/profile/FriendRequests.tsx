@@ -109,6 +109,7 @@ export default function FriendRequests(props: { profileData: ProfileType }) {
       const friendDoc = doc(db, "friends", docSnap.docs[0].id);
       await updateDoc(friendDoc, {
         status: "accepted",
+        acceptedAt: serverTimestamp(),
       });
     } catch (error) {
       console.error(error);
@@ -148,7 +149,7 @@ export default function FriendRequests(props: { profileData: ProfileType }) {
 
   useEffect(() => {
     getFriends();
-  }, []);
+  }, [profileData.id]);
 
   return (
     <>

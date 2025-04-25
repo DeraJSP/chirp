@@ -4,22 +4,30 @@ import { useNavigate } from "react-router-dom";
 import cactus from "./img/cactus.svg";
 import relax from "./img/relax.svg";
 import google from "./img/google.svg";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 
 export default function Login() {
   const navigate = useNavigate();
 
   const signInWithGoogle = async () => {
     const authObj = await signInWithPopup(auth, provider);
-    const userRef = doc(db, `users/${authObj.user?.uid}`);
-    await setDoc(userRef, {
-      id: authObj.user?.uid,
-      email: authObj.user?.email,
-      username: authObj.user?.displayName,
-      userPhoto: authObj.user?.photoURL,
-    });
+    const docSnap = doc(db, `users/${authObj.user?.uid}`);
 
-    navigate("/");
+    if (!docSnap) {
+      await setDoc(docSnap, {
+        id: authObj.user?.uid,
+        email: authObj.user?.email,
+        username: authObj.user?.displayName,
+        userPhoto: authObj.user?.photoURL,
+        bio: "",
+        location: "",
+        birthday: "",
+        joinedAt: serverTimestamp(),
+      });
+      navigate("/");
+    } else {
+      return navigate("/");
+    }
   };
 
   return (
