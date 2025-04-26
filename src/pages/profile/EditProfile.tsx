@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import close from "../../components/img/close.svg";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -15,9 +15,6 @@ export default function EditForm(props: {
 }) {
   const { userData, showProfileEdit, setShowProfileEdit } = props;
 
-  const [bio, setBio] = useState(userData.bio);
-  const [location, setLocation] = useState(userData.location);
-  const [birthday, setBirthday] = useState(userData.birthday);
   const [user] = useAuthState(auth);
 
   const schema = yup.object().shape({
@@ -26,13 +23,17 @@ export default function EditForm(props: {
     bio: yup.string().required("You must add a bio"),
   });
 
-  const onSubmit = async () => {
+  const onSubmit = async (data: {
+    bio: string;
+    location: string;
+    birthday: string;
+  }) => {
     try {
       const docSnap = doc(db, `users/${user?.uid}`);
       await updateDoc(docSnap, {
-        bio: bio,
-        location: location,
-        birthday: birthday,
+        bio: data.bio,
+        location: data.location,
+        birthday: data.birthday,
       });
     } catch (error) {
       console.error(error);
@@ -69,7 +70,6 @@ export default function EditForm(props: {
                   placeholder="Please select a date of birth"
                   {...register("birthday")}
                   defaultValue={userData.birthday}
-                  onChange={(e) => setBirthday(e.target.value)}
                   className="w-full text-lg p-2 mb-2 border-[1px] border-cGray-100 rounded-2xl overflow-y-auto resize-none focus:border-cBlue-200 focus:outline-none focus:ring-0"
                 />{" "}
                 <p className="text-red-500">{errors.bio?.message}</p>
@@ -77,7 +77,6 @@ export default function EditForm(props: {
                   placeholder="What is your location?"
                   {...register("location")}
                   defaultValue={userData.location}
-                  onChange={(e) => setLocation(e.target.value)}
                   className="w-full text-lg p-2 mb-2 border-[1px] border-cGray-100 rounded-2xl overflow-y-auto resize-none focus:border-cBlue-200 focus:outline-none focus:ring-0"
                 />{" "}
                 <p className="text-red-500">{errors.bio?.message}</p>
@@ -85,7 +84,6 @@ export default function EditForm(props: {
                   placeholder="Tell us about yourself"
                   {...register("bio")}
                   defaultValue={userData.bio}
-                  onChange={(e) => setBio(e.target.value)}
                   className="w-full h-32 text-lg p-2 border-[1px] border-cGray-100 rounded-2xl overflow-y-scroll resize-none focus:border-cBlue-200 focus:outline-none focus:ring-0"
                 />
                 <p className="text-red-500">{errors.bio?.message}</p>

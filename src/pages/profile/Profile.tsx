@@ -4,6 +4,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  onSnapshot,
   query,
   where,
 } from "firebase/firestore";
@@ -76,16 +77,52 @@ export default function Profile() {
       if (user?.uid == profileUid) {
         const docSnap = doc(db, `users/${user?.uid}`);
         const data = await getDoc(docSnap);
-
         const userDoc = {
           ...data.data(),
         } as UserType;
         setUserData(userDoc);
+
+        const unsubscribe = onSnapshot(
+          docSnap,
+          { source: "cache" },
+          (snapshot) => {
+            const userDoc = {
+              ...snapshot.data(),
+            } as UserType;
+
+            setUserData(userDoc);
+            console.log("changes added");
+          }
+        );
+        return unsubscribe;
       } else {
         return;
       }
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const getCacheDoc = () => {
+    try {
+      if (user?.uid == profileUid) {
+        const docRef = doc(db, "users", profileUid);
+        const unsubscribe = onSnapshot(
+          docRef,
+          { source: "cache" },
+          (snapshot) => {
+            const userDoc = {
+              ...snapshot.data(),
+            } as UserType;
+            setProfileData(userDoc);
+          }
+        );
+        return unsubscribe;
+      } else {
+        return;
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -96,7 +133,16 @@ export default function Profile() {
 
   useEffect(() => {
     getUserData();
-  }, [user?.uid]);
+  }, [profileUid, user?.uid]);
+
+  useEffect(() => {
+    const unsubscribe = getCacheDoc();
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [profileUid, user?.uid]);
 
   return (
     <>

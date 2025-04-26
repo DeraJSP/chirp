@@ -13,7 +13,7 @@ export const CreateForm = () => {
   //validates the data and defines how it should look
 
   const schema = yup.object().shape({
-    content: yup.string().required("You must add a description"),
+    content: yup.string().required("You must add a content"),
   });
 
   // yupResolver acts as a bridge between yup validation lib and react hook form
