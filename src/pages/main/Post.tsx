@@ -52,9 +52,7 @@ export default function Post(props: { post: PostType }) {
           />
           <div className="flex flex-col">
             <Link to={`/profile/${post.userId}`}>
-              <p className="font-bold text-lg text-gray-800">
-                @{post.username}
-              </p>
+              <p className="font-bold text-gray-800">@{post.username}</p>
             </Link>
             <p className="text-gray-600">
               <TimeAndDate
@@ -70,7 +68,7 @@ export default function Post(props: { post: PostType }) {
         <div className="flex flex-col items-start justify-center">
           <div className="mb-5">
             <Link to={`/post/${post.id}`} state={{ data }}>
-              <p className="text-lg text-gray-800">{post.content}</p>
+              <p className="text-gray-800">{post.content}</p>
             </Link>
           </div>
         </div>

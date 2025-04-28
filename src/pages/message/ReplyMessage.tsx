@@ -75,14 +75,14 @@ export default function ReplyMessage(props: ConversationType) {
             defaultValue=""
             placeholder="Send a message"
             {...register("content")}
-            className="w-full h-20 text-lg p-3 border-[1px] border-cGray-100 rounded-2xl overflow-y-auto resize-none focus:border-cBlue-200 focus:outline-none focus:ring-0"
+            className="w-full h-20 p-3 border-[1px] border-cGray-100 rounded-2xl overflow-y-auto resize-none focus:border-cBlue-200 focus:outline-none focus:ring-0"
           />
           <p className="text-red-500">{errors.content?.message}</p>
           <button
             type="submit"
-            className="hover:bg-cBlue-100 border border-cBlue-200 px-8 py-1 rounded-xl font-bold text-lg text-gray-900"
+            className="hover:bg-cBlue-100 border border-cBlue-200 px-4 py-1 rounded-xl font-bold text-gray-900"
           >
-            Send
+            Reply
           </button>
         </form>
       </div>

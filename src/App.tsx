@@ -5,7 +5,7 @@ import Profile from "./pages/profile/Profile";
 import Message from "./pages/message/Message";
 import CurrentConvo from "./pages/message/CurrentConvo";
 import { Navbar } from "./components/Navbar";
-import CreatePost from "./pages/create-post/CreatePost";
+// import CreatePost from "./pages/create-post/CreatePost";
 import "./App.css";
 import PostView from "./pages/comment/PostView";
 
@@ -35,7 +35,7 @@ function App() {
                 <Route path="/conversation" element={<CurrentConvo />}>
                   <Route path=":convoId" element={<CurrentConvo />} />
                 </Route>
-                <Route path="/createpost" element={<CreatePost />} />
+                {/* <Route path="/createpost" element={<CreatePost />} /> */}
               </Routes>
             </div>
           </div>

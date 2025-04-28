@@ -21,7 +21,6 @@ export default function PostDetails(props: { post: PostType; count: number }) {
 
   const [isVisible, setIsVisible] = useState(false);
   const [singlePost, setSinglePost] = useState<PostType | null>(null);
-  console.log(post.id);
   const { addBookmark, delBookmark, isSaved } = useBookmark(
     "postId",
     post.id !== undefined ? post.id : ""
@@ -56,7 +55,7 @@ export default function PostDetails(props: { post: PostType; count: number }) {
       );
       return unsubscribe;
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -91,7 +90,7 @@ export default function PostDetails(props: { post: PostType; count: number }) {
             />
             <div className="flex flex-col">
               <Link to={`/profile/${singlePost.userId}`}>
-                <p className="font-bold text-lg text-gray-800">
+                <p className="font-bold text-gray-800">
                   @{singlePost.username}
                 </p>
               </Link>
@@ -109,7 +108,7 @@ export default function PostDetails(props: { post: PostType; count: number }) {
           <div className="flex flex-col items-start justify-center">
             <div className="mb-5">
               {/* <Link to={`/singlePost?/${singlePost?.id}`} state={{ data }}> */}
-              <p className="text-lg text-gray-800">{singlePost.content}</p>
+              <p className="text-gray-800">{singlePost.content}</p>
               {/* </Link> */}
             </div>
           </div>
