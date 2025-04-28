@@ -37,9 +37,8 @@ export default function Comment(props: { comment: CommentType }) {
             referrerPolicy="no-referrer"
           />
           <div className="flex flex-col justify-center">
-            <p className="text-lg font-bold text-gray-700">
-              {comment.username}
-            </p>
+            <p className=" font-bold text-gray-700">{comment.username}</p>
+
             <p className="text-gray-600">
               <TimeAndDate
                 docDate={
@@ -52,12 +51,12 @@ export default function Comment(props: { comment: CommentType }) {
           </div>
         </div>
         <div className="rounded-xl p-3">
-          <p className="text-lg text-gray-700">{comment.content}</p>
+          <p className=" text-gray-700">{comment.content}</p>
         </div>
 
         <div className="flex items-center justify-between gap-x-6 mx-12">
           <div>
-            <Like docId={comment?.id} />
+            <Like docId={comment.id} />
           </div>
 
           <div>

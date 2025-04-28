@@ -64,7 +64,7 @@ export default function CurrentConvo() {
       <div className="flex fixed top-[57px] w-full bg-white border-[1px] border-cGray-100 p-2">
         {" "}
         <PreviousPage page={""} />
-        <div className="flex items-center gap-x-3 font-bold text-lg text-gray-600">
+        <div className="flex items-center gap-x-3 font-bold text-gray-600">
           <img
             src={participantPhoto}
             alt="sender photo"

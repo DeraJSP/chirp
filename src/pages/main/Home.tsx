@@ -2,7 +2,6 @@ import { getDocs, collection, onSnapshot } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { useEffect } from "react";
 import Post from "./Post";
-import { CreateForm } from "../create-post/CreateForm";
 import { PostType } from "../../components/types/PostType";
 import useFetchDoc from "../../components/hooks/useFetchDoc";
 
@@ -48,7 +47,6 @@ export default function Home() {
     return () => {
       if (unsubscribe) {
         unsubscribe();
-        console.log("clean up ran");
       }
     };
   }, []);
@@ -59,9 +57,6 @@ export default function Home() {
 
   return (
     <>
-      <section>
-        <CreateForm />
-      </section>
       <section className="flex items-center justify-center">
         <div className="flex flex-col items-center justify-center gap-y-5 w-2/5 my-10">
           {postList?.map((post) => <Post key={post.id} post={post} />)}

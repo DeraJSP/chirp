@@ -1,6 +1,6 @@
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useEffect, useState } from "react";
-import ViewLikes from "../pages/create-post/ViewLikes";
+import ViewLikes from "../pages/main/ViewLikes";
 import like from "../pages/main/img/like.svg";
 import unlike from "../pages/main/img/unlike.svg";
 import {

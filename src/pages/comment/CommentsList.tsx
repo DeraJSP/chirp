@@ -82,7 +82,7 @@ export default function CommentsList(props: {
 
   return (
     <>
-      <h2 className="mb-4 text-lg font-bold text-gray-700">Comments</h2>
+      <h2 className="mb-4 font-bold text-gray-700">Comments</h2>
       {comments?.map((comment) => (
         <Comment key={comment.id} comment={comment} />
       ))}
