@@ -123,7 +123,7 @@ export default function MessageList(props: {
                 <TimeAndDate
                   docDate={
                     message.sent
-                      ? new Date(message?.sent.seconds * 1000)
+                      ? new Date(message.sent.seconds * 1000)
                       : new Date()
                   }
                 />

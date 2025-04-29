@@ -35,15 +35,15 @@ export default function Post(props: { post: PostType }) {
 
   useEffect(() => {
     getComments("postId", post.id);
-    console.log("comments ran");
+    console.log("fbfbfb");
   }, []);
   return (
     <>
       <div
-        className="w-full p-3 border-[1px] border-cGray-100 rounded-2xl bg-white"
+        className="w-full border-[1px] border-cGray-100 rounded-2xl bg-[#fbfbfb]"
         key={post.id}
       >
-        <div className="flex items-center gap-x-2 mb-3">
+        <div className="flex items-center gap-x-2 border-b-[1px] px-2 py-1 pb-[1px]">
           <img
             src={post.userPhoto}
             alt="profile picture thumbnail"
@@ -65,15 +65,14 @@ export default function Post(props: { post: PostType }) {
             </p>
           </div>
         </div>
-        <div className="flex flex-col items-start justify-center">
-          <div className="mb-5">
+        <div className="flex flex-col items-start justify-center bg-white p-2">
+          <div>
             <Link to={`/post/${post.id}`} state={{ data }}>
               <p className="text-gray-800">{post.content}</p>
             </Link>
           </div>
         </div>
-
-        <div className="flex items-center justify-between mx-10">
+        <div className="flex items-center justify-between border-t-[1px] border-cGray-100 px-2 py-1">
           <div>
             <Like docId={post.id} />
           </div>
@@ -109,7 +108,6 @@ export default function Post(props: { post: PostType }) {
             </div>
           ) : null}
         </div>
-
         <div>
           {isVisible ? (
             <EditForm

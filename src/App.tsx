@@ -16,7 +16,7 @@ function App() {
     <>
       <div className="App">
         <Router>
-          <div className="sticky top-0"> {<Navbar />}</div>
+          <div className="sticky top-0 z-50"> {<Navbar />}</div>
           <div className="">
             {/* <div className="sticky top-0">{<SideBar />}</div> */}
             <div>

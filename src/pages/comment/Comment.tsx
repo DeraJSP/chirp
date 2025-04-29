@@ -21,9 +21,7 @@ export default function Comment(props: { comment: CommentType }) {
     comment.id
   );
   const { editDoc } = useEditDoc();
-
   const [user] = useAuthState(auth);
-
   const [isVisible, setIsVisible] = useState(false);
 
   return (
@@ -43,7 +41,7 @@ export default function Comment(props: { comment: CommentType }) {
               <TimeAndDate
                 docDate={
                   comment.createdAt
-                    ? new Date(comment?.createdAt.seconds * 1000)
+                    ? new Date(comment.createdAt.seconds * 1000)
                     : new Date()
                 }
               />

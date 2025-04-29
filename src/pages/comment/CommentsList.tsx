@@ -12,10 +12,7 @@ import {
 import { db } from "../../config/firebase";
 import { PostType } from "../../components/types/PostType";
 
-export default function CommentsList(props: {
-  // commentsArr: CommentType[];
-  post: PostType;
-}) {
+export default function CommentsList(props: { post: PostType }) {
   const { post } = props;
 
   const {

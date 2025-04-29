@@ -77,7 +77,11 @@ export default function CurrentConvo() {
       <div className="flex justify-center mt-20 mb-36">
         <div className="flex flex-col gap-2 w-2/5">
           {convoMessages?.map((message) => (
-            <MessageList message={message} convoId={currentConvo?.id || ""} />
+            <MessageList
+              key={message.id}
+              message={message}
+              convoId={currentConvo?.id || ""}
+            />
           ))}
         </div>
       </div>
