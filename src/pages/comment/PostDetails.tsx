@@ -78,10 +78,10 @@ export default function PostDetails(props: { post: PostType; count: number }) {
     <>
       {singlePost && (
         <div
-          className="w-full p-3 border-[1px] border-cGray-100 rounded-2xl bg-white"
+          className="w-full border-[1px] border-cGray-100 rounded-2xl bg-[#fbfbfb]"
           key={singlePost.id}
         >
-          <div className="flex items-center gap-x-2 mb-3">
+          <div className="flex items-center gap-x-2 border-b-[1px] px-2 py-1 pb-[1px]">
             <img
               src={singlePost.userPhoto}
               alt="profile picture thumbnail"
@@ -105,23 +105,19 @@ export default function PostDetails(props: { post: PostType; count: number }) {
               </p>
             </div>
           </div>
-          <div className="flex flex-col items-start justify-center">
-            <div className="mb-5">
-              {/* <Link to={`/singlePost?/${singlePost?.id}`} state={{ data }}> */}
+          <div className="flex flex-col items-start justify-center bg-white p-2">
+            <div>
               <p className="text-gray-800">{singlePost.content}</p>
-              {/* </Link> */}
             </div>
           </div>
 
-          <div className="flex items-center justify-between mx-10">
+          <div className="flex items-center justify-between border-t-[1px] border-cGray-100 px-2 py-1">
             <div>
               <Like docId={singlePost.id} />
             </div>
             <div className="flex gap-x-2">
               <img src={comment_icon} alt="comment icon" className="w-5" />
-              {/* <Link to={`/singlePost?/${singlePost?.id}`}> */}
               <p className="text-gray-600">{count || 0} </p>
-              {/* </Link>{" "} */}
             </div>
             <div className="flex items-center">
               <button onClick={isSaved ? delBookmark : addBookmark}>
@@ -147,10 +143,6 @@ export default function PostDetails(props: { post: PostType; count: number }) {
                 </div>
               </>
             ) : null}
-
-            {/* {user?.uid == singlePost.userId ? (
-              
-            ) : null} */}
           </div>
 
           <div>

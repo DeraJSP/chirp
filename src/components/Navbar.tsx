@@ -4,6 +4,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { signOut } from "firebase/auth";
 import logout from "./img/logout.svg";
 import add from "./img/add.svg";
+import message from "../pages/profile/img/message.svg";
 import { CreatePost } from "../pages/main/CreatePost";
 import { useState } from "react";
 
@@ -30,9 +31,6 @@ export const Navbar = () => {
         ) : (
           <div className="flex items-center gap-x-10">
             {/* if user photo is null show an empty string */}
-            <div>
-              <Link to="/message">message</Link>
-            </div>
             <div className="flex items-center justify-center gap-x-1">
               <img
                 src={user?.photoURL || ""}
@@ -42,7 +40,7 @@ export const Navbar = () => {
               />
               <p className="font-bold">{user?.displayName}</p>
             </div>
-            <div className="flex items-center justify-center gap-x-2">
+            <div className="flex items-center justify-center gap-x-4">
               <button onClick={() => setShowPostForm(!showPostForm)}>
                 <img
                   src={add}
@@ -51,21 +49,28 @@ export const Navbar = () => {
                   title="Create post"
                 />
               </button>
-              <div>
-                {showPostForm && user?.uid ? (
+
+              {showPostForm && user?.uid ? (
+                <div>
                   <CreatePost
                     setShowPostForm={setShowPostForm}
                     showPostForm={showPostForm}
+                  />{" "}
+                </div>
+              ) : null}
+              <button>
+                <Link to="/message">
+                  {" "}
+                  <img
+                    src={message}
+                    alt="sign out"
+                    className="w-7"
+                    title="Sign out"
                   />
-                ) : null}
-              </div>
+                </Link>
+              </button>
               <button onClick={signUserOut}>
-                <img
-                  src={logout}
-                  alt="sign out"
-                  className="w-6"
-                  title="Sign out"
-                />
+                <img src={logout} alt="inbox" className="w-7" />
               </button>
             </div>
           </div>

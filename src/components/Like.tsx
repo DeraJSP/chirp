@@ -1,6 +1,6 @@
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useEffect, useState } from "react";
-import ViewLikes from "../pages/main/ViewLikes";
+import ViewLikes from "./ViewLikes";
 import like from "../pages/main/img/like.svg";
 import unlike from "../pages/main/img/unlike.svg";
 import {
@@ -159,17 +159,21 @@ export default function Like(props: { docId: string }) {
             </>
           )}
         </button>
-        {likes && (
+        {likes && likes.length > 0 ? (
           <>
             <button onClick={() => setIsVisible(!isVisible)}>
               <p className="text-gray-600">{likes?.length}</p>
             </button>
           </>
-        )}
+        ) : null}
       </div>
       <div>
-        <ViewLikes trigger={isVisible} setTrigger={setIsVisible}>
-          {likes?.map((like) => <p key={like.likeId}>{like?.username}</p>)}
+        <ViewLikes
+          trigger={isVisible}
+          setTrigger={setIsVisible}
+          setFormTrigger={setIsVisible}
+        >
+          {likes?.map((like) => <p key={like.likeId}>{like.username}</p>)}
         </ViewLikes>
       </div>
     </>
