@@ -16,8 +16,12 @@ import useDeleteDoc from "../../components/hooks/useDeleteDoc";
 import useEditDoc from "../../components/hooks/useEditDoc";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
 
-export default function PostDetails(props: { post: PostType; count: number }) {
-  const { post, count } = props;
+export default function PostDetails(props: {
+  post: PostType;
+  count: number;
+  setShowForm: (value: boolean) => void;
+}) {
+  const { post, count, setShowForm } = props;
 
   const [isVisible, setIsVisible] = useState(false);
   const [singlePost, setSinglePost] = useState<PostType | null>(null);
@@ -73,6 +77,10 @@ export default function PostDetails(props: { post: PostType; count: number }) {
   //     }
   //   };
   // }, []);
+
+  useEffect(() => {
+    setShowForm(!isVisible);
+  }, [isVisible]);
 
   return (
     <>

@@ -1,6 +1,6 @@
 import TimeAndDate from "../../components/TimeAndDate";
 import { auth } from "../../config/firebase";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Like from "../../components/Like";
 import delPost from "../main/img/del_post.svg";
@@ -13,8 +13,11 @@ import useDeleteDoc from "../../components/hooks/useDeleteDoc";
 import useBookmark from "../../components/hooks/useBookmark";
 import useEditDoc from "../../components/hooks/useEditDoc";
 
-export default function Comment(props: { comment: CommentType }) {
-  const { comment } = props;
+export default function Comment(props: {
+  comment: CommentType;
+  setShowForm: (value: boolean) => void;
+}) {
+  const { comment, setShowForm } = props;
   const { delDoc } = useDeleteDoc("comments", comment.id);
   const { addBookmark, delBookmark, isSaved } = useBookmark(
     "commentId",
@@ -24,6 +27,9 @@ export default function Comment(props: { comment: CommentType }) {
   const [user] = useAuthState(auth);
   const [isVisible, setIsVisible] = useState(false);
 
+  useEffect(() => {
+    setShowForm(!isVisible);
+  }, [isVisible]);
   return (
     <>
       <div className="bg-white w-full border-[1px] border border-cGray-100 rounded-2xl p-3 mb-5">
