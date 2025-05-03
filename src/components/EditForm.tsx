@@ -35,8 +35,8 @@ export default function EditForm(props: {
   return (
     <>
       {isVisible ? (
-        <div className="fixed top-0 left-0 w-full h-screen my-12 bg-black bg-opacity-50 bg-black flex items-center justify-center">
-          <div className="relative p-8 bg-white shadow-xl w-2/5 h-96 rounded-2xl border-[1px] border-cGray-100">
+        <div className="fixed top-0 left-0 w-full h-screen bg-black bg-opacity-50 bg-black flex items-center justify-center">
+          <div className="relative p-8 bg-white shadow-xl w-2/5 h-64 rounded-2xl border-[1px] border-cGray-100">
             <button
               type="button"
               onClick={() => setIsVisible(!isVisible)}
@@ -51,14 +51,14 @@ export default function EditForm(props: {
                   {...register("content")}
                   defaultValue={doc.content}
                   onChange={(e) => setNewValue(e.target.value)}
-                  className="w-full h-64 bg-[#fbfbfb] p-3 border-[1px] border-cGray-100 rounded-2xl overflow-y-auto resize-none focus:border-cBlue-200 focus:outline-none focus:ring-0"
+                  className="w-full h-36 bg-[#fbfbfb] p-3 border-[1px] border-cGray-100 rounded-2xl overflow-y-auto resize-none focus:border-cBlue-200 focus:outline-none focus:ring-0"
                 />
                 <p className="text-red-500">{errors.content?.message}</p>
                 <button
                   type="submit"
                   className="hover:bg-cBlue-100 bg-[#fbfbfb] border border-cBlue-200 px-3 py-1 rounded-xl font-bold text-gray-900"
                 >
-                  Submit
+                  Save
                 </button>
               </form>
             </div>

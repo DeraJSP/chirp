@@ -52,7 +52,7 @@ export default function Post(props: { post: PostType }) {
           />
           <div className="flex flex-col">
             <Link to={`/profile/${post.userId}`}>
-              <p className="font-bold text-gray-800">@{post.username}</p>
+              <p className="font-bold text-gray-800">{post.username}</p>
             </Link>
             <p className="text-gray-600">
               <TimeAndDate

@@ -12,8 +12,11 @@ import {
 import { db } from "../../config/firebase";
 import { PostType } from "../../components/types/PostType";
 
-export default function CommentsList(props: { post: PostType }) {
-  const { post } = props;
+export default function CommentsList(props: {
+  post: PostType;
+  setShowForm: (value: boolean) => void;
+}) {
+  const { post, setShowForm } = props;
 
   const {
     data: comments,
@@ -81,7 +84,7 @@ export default function CommentsList(props: { post: PostType }) {
     <>
       <h2 className="mb-4 font-bold text-gray-700">Comments</h2>
       {comments?.map((comment) => (
-        <Comment key={comment.id} comment={comment} />
+        <Comment key={comment.id} comment={comment} setShowForm={setShowForm} />
       ))}
     </>
   );
