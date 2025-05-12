@@ -8,6 +8,7 @@ import { Navbar } from "./components/Navbar";
 // import CreatePost from "./pages/create-post/CreatePost";
 import "./App.css";
 import PostView from "./pages/comment/PostView";
+import ManageFriends from "./pages/friends/ManageFriends";
 
 // import SideBar from "./components/SideBar";
 
@@ -35,7 +36,7 @@ function App() {
                 <Route path="/conversation" element={<CurrentConvo />}>
                   <Route path=":convoId" element={<CurrentConvo />} />
                 </Route>
-                {/* <Route path="/createpost" element={<CreatePost />} /> */}
+                <Route path="/friends" element={<ManageFriends />} />
               </Routes>
             </div>
           </div>

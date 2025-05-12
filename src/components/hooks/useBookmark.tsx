@@ -21,7 +21,7 @@ export default function useBookmark(fieldName: string, docId: string) {
       const bookmarksRef = collection(db, "bookmarks");
       await addDoc(bookmarksRef, {
         [fieldName]: docId,
-        userId: user?.uid,
+        userId: user?.uid || "",
         createdAt: serverTimestamp(),
       });
       setIsSaved(true);
@@ -37,7 +37,7 @@ export default function useBookmark(fieldName: string, docId: string) {
       const querySnapshot = query(
         collection(db, "bookmarks"),
         where(fieldName, "==", docId),
-        where("userId", "==", user?.uid)
+        where("userId", "==", user?.uid || "")
       );
       const data = await getDocs(querySnapshot);
       return data.empty ? setIsSaved(false) : setIsSaved(true);
@@ -52,7 +52,7 @@ export default function useBookmark(fieldName: string, docId: string) {
       const querySnapshot = query(
         collection(db, "bookmarks"),
         where(fieldName, "==", docId),
-        where("userId", "==", user?.uid)
+        where("userId", "==", user?.uid || "")
       );
       const data = await getDocs(querySnapshot);
       await deleteDoc(doc(db, "bookmarks", data.docs[0].id));
