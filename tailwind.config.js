@@ -9,6 +9,7 @@ export default {
           200: "#0083B0",
         },
         cGray: {
+          50: "#F4F4F4",
           100: "#CFD9DE",
           // 100: "#A8A8A8",
         },

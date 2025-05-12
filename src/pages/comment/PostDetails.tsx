@@ -25,10 +25,7 @@ export default function PostDetails(props: {
 
   const [isVisible, setIsVisible] = useState(false);
   const [singlePost, setSinglePost] = useState<PostType | null>(null);
-  const { addBookmark, delBookmark, isSaved } = useBookmark(
-    "postId",
-    post.id !== undefined ? post.id : ""
-  );
+  const { addBookmark, delBookmark, isSaved } = useBookmark("postId", post.id);
   const { delDoc: deletePost } = useDeleteDoc("posts", post.id);
   const { editDoc } = useEditDoc();
   const [user] = useAuthState(auth);

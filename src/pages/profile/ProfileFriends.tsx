@@ -6,7 +6,7 @@ import { ProfileType } from "../../components/types/ProfileType";
 import { Link } from "react-router-dom";
 import TimeAndDate from "../../components/TimeAndDate";
 
-export default function Friends(props: { profileData: ProfileType }) {
+export default function ProfileFriends(props: { profileData: ProfileType }) {
   const { profileData } = props;
   const [friendsList, setFriendsList] = useState<FriendType[] | null>(null);
 
@@ -35,7 +35,7 @@ export default function Friends(props: { profileData: ProfileType }) {
   return (
     <>
       <section>
-        <div className="flex flex-col items-center justify-center gap-y-2 p-1 rounded-2xl hover:bg-white hover:border-[1px] hover:border-cGray-100">
+        <div className="flex flex-col items-center justify-center gap-y-2 rounded-2xl hover:bg-white hover:border-[1px] hover:border-cGray-100">
           {friendsList?.map((friend) => (
             <Link
               to={`/profile/${
@@ -54,7 +54,7 @@ export default function Friends(props: { profileData: ProfileType }) {
                   }
                   alt="Friend photo"
                   referrerPolicy="no-referrer"
-                  className="rounded-full w-16"
+                  className="rounded-full w-12"
                 />
                 <div>
                   <p className="text-lg font-bold">

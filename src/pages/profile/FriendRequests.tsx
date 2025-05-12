@@ -30,7 +30,7 @@ export default function FriendRequests(props: { profileData: ProfileType }) {
       const friendsRef = collection(db, "friends");
       const querySnapshot = query(
         friendsRef,
-        where("userIdPair", "==", usersIdArr.sort().join(""))
+        where("userIdPair", "==", userIdPair)
       );
       const docSnap = await getDocs(querySnapshot);
       const friendDoc = docSnap.docs.map((doc) => ({
@@ -39,7 +39,7 @@ export default function FriendRequests(props: { profileData: ProfileType }) {
       })) as FriendType[];
       setFriend(friendDoc[0]);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -63,7 +63,7 @@ export default function FriendRequests(props: { profileData: ProfileType }) {
       );
       return unsubscribe;
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -80,7 +80,7 @@ export default function FriendRequests(props: { profileData: ProfileType }) {
           return "Add Friend";
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -131,7 +131,6 @@ export default function FriendRequests(props: { profileData: ProfileType }) {
         friendship: [user?.uid, profileData?.id],
         status: "pending",
         sentAt: serverTimestamp(),
-        acceptedAt: serverTimestamp(),
       });
     } catch (error) {
       console.error(error);

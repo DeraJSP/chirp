@@ -21,7 +21,7 @@ import message from "./img/message.svg";
 import PreviousPage from "../../components/PreviousPage";
 import CreateMessage from "../message/CreateMessage";
 import FriendRequests from "./FriendRequests";
-import Friends from "./Friends";
+import Friends from "./ProfileFriends";
 import { useAuthState } from "react-firebase-hooks/auth";
 import EditProfile from "./EditProfile";
 import { UserType } from "../../components/types/UserType";
@@ -286,7 +286,7 @@ export default function Profile() {
           {toggleState === 1 ? (
             postList?.map((post) => <Post key={post.id} post={post} />)
           ) : (
-            <div className="w-full">
+            <div className="w-3/5">
               {profileData && <Friends profileData={profileData} />}
             </div>
           )}

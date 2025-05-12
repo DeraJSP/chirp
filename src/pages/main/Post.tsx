@@ -35,7 +35,6 @@ export default function Post(props: { post: PostType }) {
 
   useEffect(() => {
     getComments("postId", post.id);
-    console.log("fbfbfb");
   }, []);
   return (
     <>

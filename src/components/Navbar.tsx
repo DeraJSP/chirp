@@ -30,6 +30,7 @@ export const Navbar = () => {
           </div>
         ) : (
           <div className="flex items-center gap-x-10">
+            <Link to="/friends">manage friends</Link>
             {/* if user photo is null show an empty string */}
             <div className="flex items-center justify-center gap-x-1">
               <img
@@ -65,7 +66,7 @@ export const Navbar = () => {
                     src={message}
                     alt="sign out"
                     className="w-7"
-                    title="Sign out"
+                    title="messages"
                   />
                 </Link>
               </button>

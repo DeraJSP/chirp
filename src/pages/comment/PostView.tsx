@@ -30,7 +30,7 @@ export default function PostView() {
           <CommentsList post={post} setShowForm={setShowForm} />
         </div>
       </section>
-      {showForm == true ? (
+      {showForm && (
         <section>
           <div className="flex justify-center items-center h-full">
             <div className="fixed bottom-0 z-20 w-2/5 pb-3 pt-5 bg-white">
@@ -38,7 +38,7 @@ export default function PostView() {
             </div>
           </div>
         </section>
-      ) : null}
+      )}
     </>
   );
 }
