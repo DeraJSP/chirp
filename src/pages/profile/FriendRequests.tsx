@@ -160,7 +160,11 @@ export default function FriendRequests(props: { profileData: ProfileType }) {
               ? cancelRequest
               : acceptRequest
         }
-        className="hover:bg-cBlue-100 border border-cBlue-200 mb-3 px-3 py-1 rounded-xl font-bold text-gray-700"
+        className={
+          checkRequest() == "Unfriend" || checkRequest() == "Cancel Request"
+            ? "hover:bg-orange-200 border border-orange-600 mb-3 px-3 py-1 rounded-xl font-bold text-gray-700"
+            : "hover:bg-cBlue-100 border border-cBlue-200 mb-3 px-3 py-1 rounded-xl font-bold text-gray-700"
+        }
       >
         <div className="flex items-center gap-x-3">
           <img src={addfriend} alt="Add friend icon" />

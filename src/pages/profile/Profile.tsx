@@ -21,7 +21,7 @@ import message from "./img/message.svg";
 import PreviousPage from "../../components/PreviousPage";
 import CreateMessage from "../message/CreateMessage";
 import FriendRequests from "./FriendRequests";
-import Friends from "./ProfileFriends";
+import ProfileFriends from "./ProfileFriends";
 import { useAuthState } from "react-firebase-hooks/auth";
 import EditProfile from "./EditProfile";
 import { UserType } from "../../components/types/UserType";
@@ -260,7 +260,7 @@ export default function Profile() {
         </div>
       </section>
       <section className="flex items-center justify-center">
-        <div className="flex flex-col items-center justify-center gap-y-5 w-2/5 my-10">
+        <div className="flex flex-col items-center justify-center gap-y-5 w-1/3 my-10">
           <div className="flex justify-center gap-x-10">
             <button
               onClick={() => setToggleState(1)}
@@ -286,8 +286,8 @@ export default function Profile() {
           {toggleState === 1 ? (
             postList?.map((post) => <Post key={post.id} post={post} />)
           ) : (
-            <div className="w-3/5">
-              {profileData && <Friends profileData={profileData} />}
+            <div className="w-full">
+              {profileData && <ProfileFriends profileData={profileData} />}
             </div>
           )}
         </div>

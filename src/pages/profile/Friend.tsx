@@ -4,26 +4,30 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import useDeleteDoc from "../../components/hooks/useDeleteDoc";
 import TimeAndDate from "../../components/TimeAndDate";
 import { Link } from "react-router-dom";
+import { ProfileType } from "../../components/types/ProfileType";
 
-export default function Friend(props: { friend: FriendType }) {
-  const { friend } = props;
+export default function Friend(props: {
+  friend: FriendType;
+  profileData: ProfileType;
+}) {
+  const { friend, profileData } = props;
   const [user] = useAuthState(auth);
   const { delDoc: deleteFriend } = useDeleteDoc("friends", friend.id);
 
   const friendId =
-    friend.senderId === user?.uid ? friend.receiverId : friend.senderId;
+    friend.senderId === profileData.id ? friend.receiverId : friend.senderId;
 
   const friendPhoto =
-    friend.senderPhoto === user?.photoURL
+    friend.senderPhoto === profileData.userPhoto
       ? friend.receiverPhoto
       : friend.senderPhoto;
 
   const friendUsername =
-    friend.senderUsername === user?.displayName
+    friend.senderUsername === profileData.username
       ? friend.receiverUsername
       : friend.senderUsername;
 
-  const acceptedDate = () => {
+  const acceptanceDate = () => {
     return friend.acceptedAt
       ? new Date(friend.acceptedAt.seconds * 1000)
       : new Date();
@@ -44,20 +48,22 @@ export default function Friend(props: { friend: FriendType }) {
             <div className="flex flex-col justify-center">
               <p className="font-bold">{friendUsername}</p>
               <p className="text-gray-500">
-                friend since <TimeAndDate docDate={acceptedDate()} />
+                friend since <TimeAndDate docDate={acceptanceDate()} />
               </p>
             </div>
           </div>
         </Link>
 
-        <div className="flex items-center justify-center gap-x-2">
-          <button
-            onClick={deleteFriend}
-            className="hover:bg-orange-200 border border-orange-600 mb-3 px-3 py-1 rounded-xl font-bold text-gray-700"
-          >
-            Unfriend
-          </button>
-        </div>
+        {profileData.id == user?.uid ? (
+          <div className="flex items-center justify-center gap-x-2">
+            <button
+              onClick={deleteFriend}
+              className="hover:bg-orange-200 border border-orange-600 mb-3 px-3 py-1 rounded-xl font-bold text-gray-700"
+            >
+              Unfriend
+            </button>
+          </div>
+        ) : null}
       </div>
     </>
   );
