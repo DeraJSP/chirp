@@ -97,21 +97,8 @@ export default function ManageFriends() {
 
   return (
     <>
-      {/* {" "}
-      <section>
-        <h1>Friend Requests</h1>
-        {requests?.map((request) => (
-          <Request key={request.id} request={request} />
-        ))}
-      </section>
-      <section>
-        <h1>Friend List</h1>
-        {friendsList?.map((friend) => (
-          <Friend key={friend.id} friend={friend} />
-        ))}
-      </section> */}
       <section className="flex items-center justify-center">
-        <div className="flex flex-col items-center justify-center gap-y-5 w-2/5 my-10">
+        <div className="flex flex-col items-center justify-center gap-y-5 w-1/3 my-10">
           <div className="flex justify-center gap-x-10">
             <button
               onClick={() => setToggleState(1)}
@@ -145,13 +132,13 @@ export default function ManageFriends() {
             </button>
           </div>
           {toggleState === 1 ? (
-            <div className="w-full">
+            <div className="flex flex-col w-full">
               {friendsList?.map((friend) => (
                 <Friend key={friend.id} friend={friend} />
               ))}
             </div>
           ) : (
-            <div className="w-full">
+            <div className="flex flex-col w-full">
               {requestsList?.map((request) => (
                 <Request key={request.id} request={request} />
               ))}
