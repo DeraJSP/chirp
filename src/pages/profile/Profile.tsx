@@ -29,12 +29,11 @@ import TimeAndDate from "../../components/TimeAndDate";
 
 export default function Profile() {
   const [profileData, setProfileData] = useState<UserType | null>(null);
-  const [userData, setUserData] = useState<UserType | null>(null);
-  const [toggleState, setToggleState] = useState(1);
+  // const [userData, setUserData] = useState<UserType | null>(null);
+  const [toggleTabState, setToggleTabState] = useState(1);
   const [isVisible, setIsVisible] = useState(false);
   const [showProfileEdit, setShowProfileEdit] = useState(false);
-  const [postList, setPostList] = useState<PostType[] | null>(null);
-  // const [friends, setFriendsList] = useState<FriendType[] | null>(null);
+  const [profilePosts, setProfilePosts] = useState<PostType[] | null>(null);
 
   const params = useParams<{ userId: string }>();
   const profileUid = params.userId || "";
@@ -54,7 +53,7 @@ export default function Profile() {
     }
   };
 
-  const getPost = async () => {
+  const getProfilePosts = async () => {
     try {
       const querySnapshot = query(
         collection(db, "posts"),
@@ -66,61 +65,52 @@ export default function Profile() {
         id: doc.id,
         ...doc.data(),
       })) as PostType[];
-      setPostList(postDoc);
+      setProfilePosts(postDoc);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const getUserData = async () => {
-    try {
-      if (user?.uid == profileUid) {
-        const docSnap = doc(db, `users/${user?.uid}`);
-        const data = await getDoc(docSnap);
-        const userDoc = {
-          ...data.data(),
-        } as UserType;
-        setUserData(userDoc);
+  // const getUserData = async () => {
+  //   try {
+  //     const docSnap = doc(db, `users/${user?.uid}`);
+  //     const data = await getDoc(docSnap);
+  //     const userDoc = {
+  //       ...data.data(),
+  //     } as UserType;
+  //     setUserData(userDoc);
 
-        const unsubscribe = onSnapshot(
-          docSnap,
-          { source: "cache" },
-          (snapshot) => {
-            const userDoc = {
-              ...snapshot.data(),
-            } as UserType;
-
-            setUserData(userDoc);
-            console.log("changes added");
-          }
-        );
-        return unsubscribe;
-      } else {
-        return;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //     const unsubscribe = onSnapshot(
+  //       docSnap,
+  //       { source: "cache" },
+  //       (snapshot) => {
+  //         const userDoc = {
+  //           ...snapshot.data(),
+  //         } as UserType;
+  //         setUserData(userDoc);
+  //         console.log("changes added");
+  //       }
+  //     );
+  //     return unsubscribe;
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   const getCacheDoc = () => {
     try {
-      if (user?.uid == profileUid) {
-        const docRef = doc(db, "users", profileUid);
-        const unsubscribe = onSnapshot(
-          docRef,
-          { source: "cache" },
-          (snapshot) => {
-            const userDoc = {
-              ...snapshot.data(),
-            } as UserType;
-            setProfileData(userDoc);
-          }
-        );
-        return unsubscribe;
-      } else {
-        return;
-      }
+      const docRef = doc(db, "users", profileUid);
+      const unsubscribe = onSnapshot(
+        docRef,
+        { source: "cache" },
+        (snapshot) => {
+          const userDoc = {
+            ...snapshot.data(),
+          } as UserType;
+          setProfileData(userDoc);
+        }
+      );
+      return unsubscribe;
     } catch (error) {
       console.error(error);
     }
@@ -128,12 +118,12 @@ export default function Profile() {
 
   useEffect(() => {
     getProfileData();
-    getPost();
+    getProfilePosts();
   }, [profileUid]);
 
-  useEffect(() => {
-    getUserData();
-  }, [profileUid, user?.uid]);
+  // useEffect(() => {
+  //   getUserData();
+  // }, [profileUid, user?.uid]);
 
   useEffect(() => {
     const unsubscribe = getCacheDoc();
@@ -178,11 +168,11 @@ export default function Profile() {
                     Edit Profile
                   </button>
                   <div>
-                    {showProfileEdit && userData ? (
+                    {showProfileEdit && profileData ? (
                       <EditProfile
                         setShowProfileEdit={setShowProfileEdit}
                         showProfileEdit={showProfileEdit}
-                        userData={userData}
+                        profileData={profileData}
                       />
                     ) : null}
                   </div>
@@ -192,7 +182,7 @@ export default function Profile() {
                   <div>
                     <button
                       onClick={() => setIsVisible(!isVisible)}
-                      className="hover:bg-cBlue-100 border border-cBlue-200 mb-3 px-3 py-1 rounded-xl font-bold text-gray-700"
+                      className="hover:bg-cBlue-100 border border-cBlue-200 mb-3 px-3 py-1 rounded-xl font-bold hover:text-gray-800 text-gray-600"
                     >
                       <div className="flex items-center gap-x-3">
                         <img src={message} alt="Message icon" />
@@ -263,9 +253,9 @@ export default function Profile() {
         <div className="flex flex-col items-center justify-center gap-y-5 w-1/3 my-10">
           <div className="flex justify-center gap-x-10">
             <button
-              onClick={() => setToggleState(1)}
+              onClick={() => setToggleTabState(1)}
               className={
-                toggleState === 1
+                toggleTabState === 1
                   ? "w-16 border-b-4 border-cBlue-200 p-2 font-bold text-gray-800"
                   : "p-3 font-bold text-gray-500 hover:bg-gray-200 hover:rounded-xl"
               }
@@ -273,9 +263,9 @@ export default function Profile() {
               <p>Posts</p>
             </button>
             <button
-              onClick={() => setToggleState(2)}
+              onClick={() => setToggleTabState(2)}
               className={
-                toggleState === 2
+                toggleTabState === 2
                   ? "w-16 border-b-4 border-cBlue-200 p-2 font-bold text-gray-800 hover:bg-gray-200-rounded-xl"
                   : "p-3 font-bold text-gray-500 hover:bg-gray-200 hover:rounded-xl"
               }
@@ -283,13 +273,9 @@ export default function Profile() {
               <p>Friends</p>
             </button>
           </div>
-          {toggleState === 1 ? (
-            postList?.map((post) => <Post key={post.id} post={post} />)
-          ) : (
-            <div className="w-full">
-              {profileData && <ProfileFriends profileData={profileData} />}
-            </div>
-          )}
+          {toggleTabState === 1
+            ? profilePosts?.map((post) => <Post key={post.id} post={post} />)
+            : profileData && <ProfileFriends profileData={profileData} />}
         </div>
       </section>
     </>

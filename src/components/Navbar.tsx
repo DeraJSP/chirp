@@ -5,6 +5,7 @@ import { signOut } from "firebase/auth";
 import logout from "./img/logout.svg";
 import add from "./img/add.svg";
 import message from "../pages/profile/img/message.svg";
+import friends from "./img/friends.svg";
 import { CreatePost } from "../pages/main/CreatePost";
 import { useState } from "react";
 
@@ -30,8 +31,6 @@ export const Navbar = () => {
           </div>
         ) : (
           <div className="flex items-center gap-x-10">
-            <Link to="/friends">manage friends</Link>
-            {/* if user photo is null show an empty string */}
             <div className="flex items-center justify-center gap-x-1">
               <img
                 src={user?.photoURL || ""}
@@ -64,14 +63,30 @@ export const Navbar = () => {
                   {" "}
                   <img
                     src={message}
-                    alt="sign out"
+                    alt="inbox"
                     className="w-7"
                     title="messages"
                   />
                 </Link>
               </button>
+              <button>
+                {" "}
+                <Link to="/friends">
+                  <img
+                    src={friends}
+                    alt="friends"
+                    className="w-7"
+                    title="manage friends"
+                  />
+                </Link>
+              </button>
               <button onClick={signUserOut}>
-                <img src={logout} alt="inbox" className="w-7" />
+                <img
+                  src={logout}
+                  alt="log out"
+                  title="log out"
+                  className="w-7"
+                />
               </button>
             </div>
           </div>

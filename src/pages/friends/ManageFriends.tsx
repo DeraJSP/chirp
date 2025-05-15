@@ -10,16 +10,15 @@ import {
 } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Friend from "./Friend";
-import Request from "./Request";
+import SingleRequest from "./SingleRequest";
 
 export default function ManageFriends() {
   const [friendsList, setFriendsList] = useState<FriendType[] | null>(null);
-  const [requestsList, setRequestsList] = useState<FriendType[] | null>(null);
-  const [toggleState, setToggleState] = useState(1);
-
+  const [friendRequest, setFriendRequest] = useState<FriendType[] | null>(null);
+  const [toggleTabState, setToggleTabState] = useState(1);
   const [user] = useAuthState(auth);
 
-  const getRequests = async () => {
+  const getFriendRequest = async () => {
     try {
       const requestQuery = query(
         collection(db, `friends`),
@@ -31,7 +30,32 @@ export default function ManageFriends() {
         id: doc.id,
         ...doc.data(),
       })) as FriendType[];
-      setRequestsList(requestDoc);
+      setFriendRequest(requestDoc);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getRequestsFromCache = () => {
+    try {
+      const friendsRef = collection(db, "friends");
+      const querySnapshot = query(
+        friendsRef,
+        where("status", "==", "pending"),
+        where("receiverId", "==", user?.uid || "")
+      );
+      const unsubscribe = onSnapshot(
+        querySnapshot,
+        { source: "cache" },
+        (snapshot) => {
+          const requestDoc = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          })) as FriendType[];
+          setFriendRequest(requestDoc);
+        }
+      );
+      return unsubscribe;
     } catch (error) {
       console.error(error);
     }
@@ -55,7 +79,7 @@ export default function ManageFriends() {
     }
   };
 
-  const getCacheDoc = () => {
+  const getFriendsFromCache = () => {
     try {
       const friendsRef = collection(db, "friends");
       const querySnapshot = query(
@@ -82,18 +106,26 @@ export default function ManageFriends() {
 
   useEffect(() => {
     getFriends();
+    console.log("friendsList", friendsList);
   }, [user?.uid]);
 
   useEffect(() => {
-    getRequests();
-  }, [user?.uid]);
-
-  useEffect(() => {
-    const unsubscribe = getCacheDoc();
+    const unsubscribe = getFriendsFromCache();
     if (unsubscribe) {
       return () => unsubscribe();
     }
-  }, []);
+  }, [user?.uid]);
+
+  useEffect(() => {
+    getFriendRequest();
+  }, [user?.uid]);
+
+  useEffect(() => {
+    const unsubscribe = getRequestsFromCache();
+    if (unsubscribe) {
+      return () => unsubscribe();
+    }
+  }, [user?.uid]);
 
   return (
     <>
@@ -101,9 +133,9 @@ export default function ManageFriends() {
         <div className="flex flex-col items-center justify-center gap-y-5 w-1/3 my-10">
           <div className="flex justify-center gap-x-10">
             <button
-              onClick={() => setToggleState(1)}
+              onClick={() => setToggleTabState(1)}
               className={
-                toggleState === 1
+                toggleTabState === 1
                   ? "flex justify-center w-18 border-b-4 border-cBlue-200 p-2 font-bold text-gray-800"
                   : "p-2 font-bold text-gray-500 hover:bg-gray-200 hover:rounded-xl"
               }
@@ -116,22 +148,22 @@ export default function ManageFriends() {
               </p>
             </button>
             <button
-              onClick={() => setToggleState(2)}
+              onClick={() => setToggleTabState(2)}
               className={
-                toggleState === 2
+                toggleTabState === 2
                   ? "flex justify-center w-18 border-b-4 border-cBlue-200 p-2 font-bold text-gray-800 hover:bg-gray-200-rounded-xl"
                   : "p-2 font-bold text-gray-500 hover:bg-gray-200 hover:rounded-xl"
               }
             >
               <p>
                 Requests
-                {requestsList?.length || 0 > 0 ? (
-                  <>({requestsList?.length})</>
+                {friendRequest?.length || 0 > 0 ? (
+                  <>({friendRequest?.length})</>
                 ) : null}
               </p>
             </button>
           </div>
-          {toggleState === 1 ? (
+          {toggleTabState === 1 ? (
             <div className="flex flex-col w-full">
               {friendsList?.map((friend) => (
                 <Friend key={friend.id} friend={friend} />
@@ -139,8 +171,8 @@ export default function ManageFriends() {
             </div>
           ) : (
             <div className="flex flex-col w-full">
-              {requestsList?.map((request) => (
-                <Request key={request.id} request={request} />
+              {friendRequest?.map((request) => (
+                <SingleRequest key={request.id} request={request} />
               ))}
             </div>
           )}

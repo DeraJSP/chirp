@@ -5,9 +5,9 @@ import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import TimeAndDate from "../../components/TimeAndDate";
 import { Link } from "react-router-dom";
 
-export default function Request(props: { request: FriendType }) {
+export default function SingleRequest(props: { request: FriendType }) {
   const { request } = props;
-  const { delDoc: deleteFriend } = useDeleteDoc("friends", request.id);
+  const { delDoc: cancelRequest } = useDeleteDoc("friends", request.id);
 
   const acceptRequest = async () => {
     try {
@@ -49,13 +49,13 @@ export default function Request(props: { request: FriendType }) {
         <div className="flex items-center justify-center gap-x-2">
           <button
             onClick={acceptRequest}
-            className="hover:bg-cBlue-100 border border-cBlue-200 mb-3 px-3 py-1 rounded-xl font-bold text-gray-700"
+            className="hover:bg-cBlue-100 border border-cBlue-200 mb-3 px-3 py-1 rounded-xl font-bold hover:text-gray-800 text-gray-600"
           >
             Accept
           </button>
           <button
-            onClick={deleteFriend}
-            className="hover:bg-orange-200 border border-orange-600 mb-3 px-3 py-1 rounded-xl font-bold text-gray-700"
+            onClick={cancelRequest}
+            className="hover:bg-orange-100 hover:border-orange-600 border border-orange-400  mb-3 px-3 py-1 rounded-xl font-bold hover:text-gray-800 text-gray-600"
           >
             Cancel
           </button>

@@ -144,7 +144,7 @@ export default function FriendRequests(props: { profileData: ProfileType }) {
         unsubscribe();
       }
     };
-  }, []);
+  }, [profileData.id]);
 
   useEffect(() => {
     getFriends();
@@ -162,8 +162,8 @@ export default function FriendRequests(props: { profileData: ProfileType }) {
         }
         className={
           checkRequest() == "Unfriend" || checkRequest() == "Cancel Request"
-            ? "hover:bg-orange-200 border border-orange-600 mb-3 px-3 py-1 rounded-xl font-bold text-gray-700"
-            : "hover:bg-cBlue-100 border border-cBlue-200 mb-3 px-3 py-1 rounded-xl font-bold text-gray-700"
+            ? "hover:bg-orange-100 hover:border-orange-600 border border-orange-400 mb-3 px-3 py-1 rounded-xl font-bold hover:text-gray-800 text-gray-600"
+            : "hover:bg-cBlue-100 border border-cBlue-200 mb-3 px-3 py-1 rounded-xl font-bold hover:text-gray-700 text-gray-600"
         }
       >
         <div className="flex items-center gap-x-3">
