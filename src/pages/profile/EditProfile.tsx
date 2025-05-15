@@ -11,9 +11,9 @@ import { useAuthState } from "react-firebase-hooks/auth";
 export default function EditForm(props: {
   showProfileEdit: boolean;
   setShowProfileEdit: (value: boolean) => void;
-  userData: UserType;
+  profileData: UserType;
 }) {
-  const { userData, showProfileEdit, setShowProfileEdit } = props;
+  const { profileData, showProfileEdit, setShowProfileEdit } = props;
 
   const [user] = useAuthState(auth);
 
@@ -69,21 +69,21 @@ export default function EditForm(props: {
                 <input
                   placeholder="Please select a date of birth"
                   {...register("birthday")}
-                  defaultValue={userData.birthday}
+                  defaultValue={profileData.birthday}
                   className="w-full text-lg p-2 mb-2 border-[1px] border-cGray-100 rounded-2xl overflow-y-auto resize-none focus:border-cBlue-200 focus:outline-none focus:ring-0"
                 />{" "}
                 <p className="text-red-500">{errors.bio?.message}</p>
                 <input
                   placeholder="What is your location?"
                   {...register("location")}
-                  defaultValue={userData.location}
+                  defaultValue={profileData.location}
                   className="w-full text-lg p-2 mb-2 border-[1px] border-cGray-100 rounded-2xl overflow-y-auto resize-none focus:border-cBlue-200 focus:outline-none focus:ring-0"
                 />{" "}
                 <p className="text-red-500">{errors.bio?.message}</p>
                 <textarea
                   placeholder="Tell us about yourself"
                   {...register("bio")}
-                  defaultValue={userData.bio}
+                  defaultValue={profileData.bio}
                   className="w-full h-32 text-lg p-2 border-[1px] border-cGray-100 rounded-2xl overflow-y-scroll resize-none focus:border-cBlue-200 focus:outline-none focus:ring-0"
                 />
                 <p className="text-red-500">{errors.bio?.message}</p>

@@ -58,7 +58,7 @@ export default function Friend(props: {
           <div className="flex items-center justify-center gap-x-2">
             <button
               onClick={deleteFriend}
-              className="hover:bg-orange-200 border border-orange-600 mb-3 px-3 py-1 rounded-xl font-bold text-gray-700"
+              className="hover:bg-orange-100 hover:border-orange-600 border border-orange-400 mb-3 px-3 py-1 rounded-xl font-bold hover:text-gray-700 text-gray-600"
             >
               Unfriend
             </button>
