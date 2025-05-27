@@ -8,30 +8,36 @@ import { PostType } from "../../components/types/PostType";
 import Like from "../../components/Like";
 import comment_icon from "./img/comment.svg";
 import delPost from "./img/del_post.svg";
-import editPostIcon from "./img/edit_post.svg";
+// import editPostIcon from "./img/edit_post.svg";
 import EditForm from "../../components/EditForm";
 import save from "./img/save.svg";
 import unsave from "./img/unsave.svg";
+import eclipse from "./img/eclipse.svg";
 import useBookmark from "../../components/hooks/useBookmark";
 import useDeleteDoc from "../../components/hooks/useDeleteDoc";
 import useFetchDoc from "../../components/hooks/useFetchDoc";
 import useEditDoc from "../../components/hooks/useEditDoc";
+import ContextMenu from "../../components/ContextMenu";
 
 export default function Post(props: { post: PostType }) {
   const { post } = props;
 
-  const [isVisible, setIsVisible] = useState(false);
-
+  const [showContextMenu, setShowContextMenu] = useState(false);
   const { addBookmark, delBookmark, isSaved } = useBookmark("postId", post.id);
   const { delDoc: deletePost } = useDeleteDoc("posts", post.id);
   const { data: comments, getDoc: getComments } =
     useFetchDoc<CommentType>("comments");
 
-  const { editDoc } = useEditDoc();
+  // const { editDoc } = useEditDoc();
   const [user] = useAuthState(auth);
   const count = comments?.length;
   const data = { comments, post, count };
-  // const countCheck = () => `${count || 0 > 1 ? count : count}`;
+
+  const postDate = () => {
+    return post.createdAt
+      ? new Date(post.createdAt.seconds * 1000)
+      : new Date();
+  };
 
   useEffect(() => {
     getComments("postId", post.id);
@@ -54,13 +60,7 @@ export default function Post(props: { post: PostType }) {
               <p className="font-bold text-gray-800">{post.username}</p>
             </Link>
             <p className="text-gray-600">
-              <TimeAndDate
-                docDate={
-                  post.createdAt
-                    ? new Date(post?.createdAt.seconds * 1000)
-                    : new Date()
-                }
-              />
+              <TimeAndDate docDate={postDate()} />
             </p>
           </div>
         </div>
@@ -93,30 +93,22 @@ export default function Post(props: { post: PostType }) {
 
           {user?.uid == post.userId ? (
             <div>
-              <button onClick={() => setIsVisible(!isVisible)}>
-                <img src={editPostIcon} alt="edit post icon" />
-              </button>
-            </div>
-          ) : null}
-
-          {user?.uid == post.userId ? (
-            <div>
-              <button onClick={deletePost}>
-                <img src={delPost} alt="delete post icon" />
+              <button onClick={() => setShowContextMenu(!showContextMenu)}>
+                <img src={eclipse} alt="context menu" />
               </button>
             </div>
           ) : null}
         </div>
-        <div>
-          {isVisible ? (
-            <EditForm
-              setIsVisible={setIsVisible}
-              isVisible={isVisible}
-              doc={post}
-              editDoc={editDoc}
-              docCol="posts"
+
+        <div className="absolute top-[175px] right-[410px]">
+          {showContextMenu && (
+            <ContextMenu
+              setShowContextMenu={setShowContextMenu}
+              showContextMenu={showContextMenu}
+              targetDocCol="posts"
+              targetDoc={post}
             />
-          ) : null}
+          )}
         </div>
       </div>
     </>

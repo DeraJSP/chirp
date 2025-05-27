@@ -15,9 +15,9 @@ import useEditDoc from "../../components/hooks/useEditDoc";
 
 export default function Comment(props: {
   comment: CommentType;
-  setShowForm: (value: boolean) => void;
+  setShowCommentForm: (value: boolean) => void;
 }) {
-  const { comment, setShowForm } = props;
+  const { comment, setShowCommentForm } = props;
   const { delDoc } = useDeleteDoc("comments", comment.id);
   const { addBookmark, delBookmark, isSaved } = useBookmark(
     "commentId",
@@ -27,9 +27,16 @@ export default function Comment(props: {
   const [user] = useAuthState(auth);
   const [isVisible, setIsVisible] = useState(false);
 
+  const createdAtDate = () => {
+    return comment.createdAt
+      ? new Date(comment.createdAt.seconds * 1000)
+      : new Date();
+  };
+
   useEffect(() => {
-    setShowForm(!isVisible);
+    setShowCommentForm(!isVisible);
   }, [isVisible]);
+
   return (
     <>
       <div className="bg-white w-full border-[1px] border border-cGray-100 rounded-2xl p-3 mb-5">
@@ -44,13 +51,7 @@ export default function Comment(props: {
             <p className=" font-bold text-gray-700">{comment.username}</p>
 
             <p className="text-gray-600">
-              <TimeAndDate
-                docDate={
-                  comment.createdAt
-                    ? new Date(comment.createdAt.seconds * 1000)
-                    : new Date()
-                }
-              />
+              <TimeAndDate docDate={createdAtDate()} />
             </p>
           </div>
         </div>
@@ -83,10 +84,9 @@ export default function Comment(props: {
 
           {user?.uid == comment.userId ? (
             <div>
-              {" "}
               <button onClick={delDoc}>
                 <img src={delPost} alt="delete post icon" />
-              </button>{" "}
+              </button>
             </div>
           ) : null}
         </div>

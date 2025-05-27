@@ -8,6 +8,7 @@ import Like from "../../components/Like";
 import comment_icon from "../main/img/comment.svg";
 import delPost from "../main/img/del_post.svg";
 import editPostIcon from "../main/img/edit_post.svg";
+import line from "../main/img/line.svg";
 import EditForm from "../../components/EditForm";
 import save from "../main/img/save.svg";
 import unsave from "../main/img/unsave.svg";
@@ -19,16 +20,21 @@ import { doc, getDoc, onSnapshot } from "firebase/firestore";
 export default function PostDetails(props: {
   post: PostType;
   count: number;
-  setShowForm: (value: boolean) => void;
+  setShowCommentForm: (value: boolean) => void;
 }) {
-  const { post, count, setShowForm } = props;
-
+  const { post, count, setShowCommentForm } = props;
   const [isVisible, setIsVisible] = useState(false);
   const [singlePost, setSinglePost] = useState<PostType | null>(null);
   const { addBookmark, delBookmark, isSaved } = useBookmark("postId", post.id);
   const { delDoc: deletePost } = useDeleteDoc("posts", post.id);
   const { editDoc } = useEditDoc();
   const [user] = useAuthState(auth);
+
+  const postDate = () => {
+    return singlePost?.createdAt
+      ? new Date(singlePost?.createdAt.seconds * 1000)
+      : new Date();
+  };
 
   const getPost = async () => {
     const postRef = doc(db, `posts/${post.id}`);
@@ -40,7 +46,7 @@ export default function PostDetails(props: {
     setSinglePost(postDoc);
   };
 
-  const getCacheDoc = () => {
+  const getPostFromCache = () => {
     try {
       const postRef = doc(db, `posts/${post.id}`);
       const unsubscribe = onSnapshot(
@@ -62,7 +68,7 @@ export default function PostDetails(props: {
 
   useEffect(() => {
     getPost();
-    getCacheDoc();
+    getPostFromCache();
   }, []);
 
   // useEffect(() => {
@@ -76,7 +82,7 @@ export default function PostDetails(props: {
   // }, []);
 
   useEffect(() => {
-    setShowForm(!isVisible);
+    setShowCommentForm(!isVisible);
   }, [isVisible]);
 
   return (
@@ -95,18 +101,10 @@ export default function PostDetails(props: {
             />
             <div className="flex flex-col">
               <Link to={`/profile/${singlePost.userId}`}>
-                <p className="font-bold text-gray-800">
-                  @{singlePost.username}
-                </p>
+                <p className="font-bold text-gray-800">{singlePost.username}</p>
               </Link>
               <p className="text-gray-600">
-                <TimeAndDate
-                  docDate={
-                    singlePost.createdAt
-                      ? new Date(singlePost?.createdAt.seconds * 1000)
-                      : new Date()
-                  }
-                />
+                <TimeAndDate docDate={postDate()} />
               </p>
             </div>
           </div>

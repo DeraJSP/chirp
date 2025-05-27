@@ -118,6 +118,7 @@ export default function ManageFriends() {
 
   useEffect(() => {
     getFriendRequest();
+    console.log("friendRequest", friendRequest);
   }, [user?.uid]);
 
   useEffect(() => {

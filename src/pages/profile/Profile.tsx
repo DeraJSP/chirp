@@ -137,7 +137,7 @@ export default function Profile() {
   return (
     <>
       <PreviousPage page="Profile" />
-      <section>
+      <section className="profile header">
         <div className="relative">
           <div className="mx-auto ">
             <img src={cover} className="mx-auto" alt="cover photo" />
