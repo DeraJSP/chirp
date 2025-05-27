@@ -14,9 +14,9 @@ import { PostType } from "../../components/types/PostType";
 
 export default function CommentsList(props: {
   post: PostType;
-  setShowForm: (value: boolean) => void;
+  setShowCommentForm: (value: boolean) => void;
 }) {
-  const { post, setShowForm } = props;
+  const { post, setShowCommentForm } = props;
 
   const {
     data: comments,
@@ -62,7 +62,7 @@ export default function CommentsList(props: {
       );
       return unsubscribe;
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -84,7 +84,11 @@ export default function CommentsList(props: {
     <>
       <h2 className="mb-4 font-bold text-gray-700">Comments</h2>
       {comments?.map((comment) => (
-        <Comment key={comment.id} comment={comment} setShowForm={setShowForm} />
+        <Comment
+          key={comment.id}
+          comment={comment}
+          setShowCommentForm={setShowCommentForm}
+        />
       ))}
     </>
   );

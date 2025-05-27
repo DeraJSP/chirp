@@ -34,7 +34,7 @@ export const Navbar = () => {
             <div className="flex items-center justify-center gap-x-1">
               <img
                 src={user?.photoURL || ""}
-                alt="profile picture thumbnail"
+                alt="profile photo"
                 referrerPolicy="no-referrer"
                 className="rounded-full w-8"
               />

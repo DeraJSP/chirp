@@ -20,7 +20,7 @@ export default function Home() {
     setPostList(postDoc);
   };
 
-  const getCacheDoc = () => {
+  const getPostFromCache = () => {
     try {
       const colRef = collection(db, "posts");
       const unsubscribe = onSnapshot(
@@ -43,7 +43,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    const unsubscribe = getCacheDoc();
+    const unsubscribe = getPostFromCache();
     return () => {
       if (unsubscribe) {
         unsubscribe();
@@ -58,7 +58,7 @@ export default function Home() {
   return (
     <>
       <section className="flex items-center justify-center">
-        <div className="flex flex-col items-center justify-center gap-y-5 w-2/5 my-10">
+        <div className="flex flex-col items-center justify-center gap-y-5 w-1/3 my-10">
           {postList?.map((post) => <Post key={post.id} post={post} />)}
         </div>
       </section>
